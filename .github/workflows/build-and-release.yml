@@ -2,10 +2,13 @@ name: build
 
 on:
   push: {}
+  release:
+    types: [published]
   workflow_dispatch: {}
 
 permissions:
   packages: write
+  content: write
 
 jobs:
   build:
@@ -26,3 +29,9 @@ jobs:
           export KO_DOCKER_REPO="${KO_DOCKER_REPO,,}"
 
           ko resolve --bare -f config/ > ./deploy/release.yaml
+      - id: release
+        if: github.event == 'release'
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml
