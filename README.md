@@ -29,6 +29,23 @@ apply the pre-built release
 kubectl apply -f https://github.com/BobyMCbobs/sample-ko-monorepo/releases/download/v0.2.0/release.yaml
 ```
 
+## Locally run binaries
+
+```shell
+go run cmd/webthingy/main.go
+```
+
+```shell
+go run cmd/mission-critical-service/main.go
+```
+
+## Locally build
+
+```shell
+export KO_DOCKER_REPO=ghcr.io/bobymcbobs/sample-ko-monorepo
+ko resolve --bare -f config/
+```
+
 ## TODOs
 
 - [ ] dependency security scanning
