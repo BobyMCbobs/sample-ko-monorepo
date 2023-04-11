@@ -34,11 +34,12 @@ jobs:
           ko resolve --bare -f config/ > ./deploy/release.yaml
       - id: sign-images
         env:
-          COSIGN_EXPERIMENTAL: "true"
           COSIGN_YES: "true"
+          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
+          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
           for IMAGE in $(yq -N '. | select(.kind == "Service") | .spec.template.spec.containers[].image' ./deploy/release.yaml | xargs); do
-            cosign sign $IMAGE -y
+            cosign sign --key env://COSIGN_PRIVATE_KEY $IMAGE -y
           done
       - id: release
         if: github.event_name == 'release'
