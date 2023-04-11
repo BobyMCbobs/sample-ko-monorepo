@@ -15,6 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - uses: sigstore/cosign-installer@main
       - run: |
           echo '${{ toJSON(github) }}' | jq .
       - id: go-version
@@ -31,6 +32,14 @@ jobs:
           export KO_DOCKER_REPO="${KO_DOCKER_REPO,,}"
 
           ko resolve --bare -f config/ > ./deploy/release.yaml
+      - id: sign-image
+        env:
+          COSIGN_YES: "true"
+          COSIGN_EXPERIMENTAL: "true"
+        run: |
+          for IMAGE in $(yq -N '. | select(.kind == "Service") | .spec.template.spec.containers[].image' deploy/release.yaml | xargs); do
+            cosign sign --yes $IMAGE
+          done
       - id: release
         if: github.event_name == 'release'
         env:
