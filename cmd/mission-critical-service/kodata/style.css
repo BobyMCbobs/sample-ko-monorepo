@@ -1,0 +1,22 @@
+body {
+    background: black;
+    color: white;
+    text-align: center;
+}
+
+.title-card {
+    background: #2a2d2a;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+    padding: 20px;
+    margin-bottom: 10px;
+    box-shadow: white 0px 10px 291px;
+    top: 0;
+    left: 0;
+}
+
+.content-card {
+    background: #21162f;
+    border-radius: 20px;
+    padding: 20px;
+}

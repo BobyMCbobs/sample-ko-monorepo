@@ -1,2 +1,3 @@
 # sample-ko-monorepo
-A sample Go app for demontrating Ko with
+
+> A sample Go app for demontrating Ko with

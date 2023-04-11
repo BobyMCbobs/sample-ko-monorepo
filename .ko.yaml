@@ -1,0 +1,7 @@
+builds:
+  - id: webthingy
+    dir: .
+    main: ./cmd/webthingy/main.go
+  - id: mission-critical-service
+    dir: .
+    main: ./cmd/mission-critical-service/main.go
