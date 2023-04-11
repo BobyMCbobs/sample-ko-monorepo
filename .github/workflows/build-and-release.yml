@@ -30,7 +30,7 @@ jobs:
 
           ko resolve --bare -f config/ > ./deploy/release.yaml
       - id: release
-        if: github.event == 'release'
+        if: github.event_name == 'release'
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         run: |
