@@ -1,0 +1,28 @@
+name: build
+
+on:
+  push: {}
+  workflow_dispatch: {}
+
+permissions:
+  packages: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - id: go-version
+        run: |
+          echo "version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ${{ steps.go-version.outputs.version }}
+      - uses: ko-build/setup-ko@v0.6
+      - id: build-resolve
+        env:
+          KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
+        run: |
+          export KO_DOCKER_REPO="${KO_DOCKER_REPO,,}"
+
+          ko resolve --bare -f config/ > ./deploy/release.yaml
