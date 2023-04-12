@@ -57,7 +57,7 @@ jobs:
               exit 0
           fi
           TIMESTAMP="$(date +%Y-%m-%d-%H-%M)"
-          NEW_BRANCH=deploy-release-manifest-for-version-${{ github.event.release.tag_name }}-${TIMESTAMP}"
+          NEW_BRANCH="deploy-release-manifest-for-version-${{ github.event.release.tag_name }}-${TIMESTAMP}"
           git add ./deploy/release.yaml
           git branch "${NEW_BRANCH}"
           git checkout "${NEW_BRANCH}"
