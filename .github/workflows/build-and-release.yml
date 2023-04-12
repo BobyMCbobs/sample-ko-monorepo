@@ -32,7 +32,7 @@ jobs:
         run: |
           export KO_DOCKER_REPO="${KO_DOCKER_REPO,,}"
 
-          ko resolve --base-import-paths -f config/ > ./deploy/release.yaml
+          ko resolve --bare -f config/ > ./deploy/release.yaml
       - id: sign-images
         env:
           COSIGN_YES: "true"
@@ -61,6 +61,6 @@ jobs:
           git add ./deploy/release.yaml
           git branch "${NEW_BRANCH}"
           git checkout "${NEW_BRANCH}"
-          git commit -s -m deploy release manifest for version ${{ github.event.release.tag_name }}"
+          git commit -s -m "deploy release manifest for version ${{ github.event.release.tag_name }}"
           git push origin "${NEW_BRANCH}"
           gh pr create --title "Update release manifest for version ${{ github.event.release.tag_name }}" --body "Updates to include the release manifest for version ${{ github.event.release.tag_name }}"
