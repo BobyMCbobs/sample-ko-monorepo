@@ -16,6 +16,20 @@
 - [kind](https://kind.sigs.k8s.io)
 - [kn](https://knative.dev/docs/client/install-kn/)
 - [kn-quickstart](https://knative.dev/docs/getting-started/quickstart-install/)
+- [cosign](https://docs.sigstore.dev/cosign/installation/)
+
+### Set up
+
+1. generate a cosign key pair
+```shell
+cosign generate-key-pair
+```
+
+2. set GitHub secrets with `COSIGN_PRIVATE_KEY` with the contents of `cosign.key` and `COSIGN_PASSWORD` with the password (if applicable)
+
+3. commit the public key `cosign.pub` to the root of the repo
+
+alternative: import existing keys if using them
 
 ## Install products
 
