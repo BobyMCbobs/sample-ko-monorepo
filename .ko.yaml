@@ -5,3 +5,7 @@ builds:
   - id: mission-critical-service
     dir: .
     main: ./cmd/mission-critical-service/main.go
+
+defaultPlatforms:
+  - linux/amd64
+  - linux/arm64
