@@ -13,7 +13,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy-15089cb2872e777201ad16570d8ac7d8@sha256:b934c1020d53342ac81731fd4af726bb15944b02c66f2d47728e5418eec72c1c
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:52ce47e3bbd005a1b5e16899312981bd37fdc114d03909b8076438fc5583d67f
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -31,7 +31,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service-929a03fdbbfb2c2b621fbbabe2e0ac7b@sha256:442e54f0522134d6dea3b5324763eac1129f372e356149b1234878bbcac9597e
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:6e678be1ccac113ce21e6fb628f42385279f7ae898f2211e0cc1f7f1c5efff15
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
