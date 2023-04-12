@@ -49,6 +49,7 @@ jobs:
         run: |
           gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml
       - name: commit and push if there are changes
+        if: github.event_name == 'release'
         run: |
           if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep deploy/release.yaml; then
               echo changes detected
