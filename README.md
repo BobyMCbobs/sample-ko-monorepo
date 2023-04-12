@@ -29,6 +29,8 @@ cosign generate-key-pair
 
 3. commit the public key `cosign.pub` to the root of the repo
 
+4. under Settings -> Code and automation -> Actions -> General, set _Allow GitHub Actions to create and approve pull requests_ to `true`
+
 alternative: import existing keys if using them
 
 ## Install products
