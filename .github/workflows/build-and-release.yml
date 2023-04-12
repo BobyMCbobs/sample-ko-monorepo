@@ -16,6 +16,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
+      - name: configure system
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
+          gh auth status
       - uses: sigstore/cosign-installer@main
       - run: |
           echo '${{ toJSON(github) }}' | jq .
