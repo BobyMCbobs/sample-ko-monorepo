@@ -32,7 +32,6 @@ type MissionCritialService struct {
 
 func NewMissionCritialService() *MissionCritialService {
 	frontendFolderPath := common.GetServePath()
-	fmt.Println(frontendFolderPath)
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/_healthz", getHealth)
 	mux.HandleFunc("/api/number", getAPINumber)
