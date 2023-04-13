@@ -53,7 +53,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         run: |
-          gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml
+          gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml --clobber
       - name: commit and push if there are changes
         if: github.event_name == 'release'
         run: |
