@@ -13,7 +13,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:dc422d23e04bb958973917e4f178ca553807c7714d14ee5ee4bfea9cf919ca65
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:3edf17d5600ba9baa179e71f5cb61bc0039a4174456080830affe0443b804860
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -31,7 +31,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:fb14c44c642931d7d990e64784d3bef44953f1af4238c8a59cc50da4586a2c49
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:ab409d1a9c7dd8db83b2f83dfc6bdb820cae30056b496b1ca53b09010fdb3554
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
