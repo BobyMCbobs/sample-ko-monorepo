@@ -23,8 +23,6 @@ jobs:
           gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
           gh auth status
       - uses: sigstore/cosign-installer@main
-      - run: |
-          echo '${{ toJSON(github) }}' | jq .
       - id: go-version
         run: |
           echo "version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
