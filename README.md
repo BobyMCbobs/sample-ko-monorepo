@@ -42,7 +42,7 @@ kn quickstart kind
 
 apply the pre-built release
 ```shell
-kubectl apply -f https://github.com/BobyMCbobs/sample-ko-monorepo/releases/download/v0.2.0/release.yaml
+kubectl apply -f https://github.com/BobyMCbobs/sample-ko-monorepo/raw/main/deploy/release.yaml
 ```
 
 ## Locally run binaries
