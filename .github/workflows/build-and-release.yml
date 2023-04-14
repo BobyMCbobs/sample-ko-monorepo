@@ -38,21 +38,15 @@ jobs:
           export KO_DOCKER_REPO="${KO_DOCKER_REPO,,}"
 
           ko resolve --bare -f config/ > ./deploy/release.yaml
-      - id: sign-images
+      - id: sign-images-and-attest-sbom
         env:
           COSIGN_YES: "true"
         run: |
           for IMAGE in $(yq -N '. | select(.kind == "Service") | .spec.template.spec.containers[].image' ./deploy/release.yaml | xargs); do
             cosign sign $IMAGE -y
+            cosign download sbom $IMAGE > /tmp/sbom-spdx.json
+            cosign attest --predicate /tmp/sbom-spdx.json $IMAGE -y
           done
-      - name: download unsigned sbom
-        run: |
-          cosign download sbom ${{ fromJSON(toJSON(matrix)).destination }}@${{ steps.get-digests.outputs.destination }} > /tmp/sbom-spdx.json
-      - name: publish sbom blob as blob
-        env:
-          COSIGN_YES: "true"
-        run: |
-          cosign attest --predicate /tmp/sbom-spdx.json ${{ fromJSON(toJSON(matrix)).destination }}@${{ steps.get-digests.outputs.destination }} -y
       - id: release
         if: github.event_name == 'release'
         env:
