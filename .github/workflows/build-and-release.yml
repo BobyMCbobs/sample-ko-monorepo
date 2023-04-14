@@ -45,6 +45,14 @@ jobs:
           for IMAGE in $(yq -N '. | select(.kind == "Service") | .spec.template.spec.containers[].image' ./deploy/release.yaml | xargs); do
             cosign sign $IMAGE -y
           done
+      - name: download unsigned sbom
+        run: |
+          cosign download sbom ${{ fromJSON(toJSON(matrix)).destination }}@${{ steps.get-digests.outputs.destination }} > /tmp/sbom-spdx.json
+      - name: publish sbom blob as blob
+        env:
+          COSIGN_YES: "true"
+        run: |
+          cosign attest --predicate /tmp/sbom-spdx.json ${{ fromJSON(toJSON(matrix)).destination }}@${{ steps.get-digests.outputs.destination }} -y
       - id: release
         if: github.event_name == 'release'
         env:
