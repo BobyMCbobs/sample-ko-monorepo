@@ -10,6 +10,7 @@ permissions:
   packages: write
   contents: write
   pull-requests: write
+  id-token: write
 
 jobs:
   build:
@@ -40,11 +41,9 @@ jobs:
       - id: sign-images
         env:
           COSIGN_YES: "true"
-          COSIGN_PRIVATE_KEY: ${{ secrets.COSIGN_PRIVATE_KEY }}
-          COSIGN_PASSWORD: ${{ secrets.COSIGN_PASSWORD }}
         run: |
           for IMAGE in $(yq -N '. | select(.kind == "Service") | .spec.template.spec.containers[].image' ./deploy/release.yaml | xargs); do
-            cosign sign --key env://COSIGN_PRIVATE_KEY $IMAGE -y
+            cosign sign $IMAGE -y
           done
       - id: release
         if: github.event_name == 'release'
