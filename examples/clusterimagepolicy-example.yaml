@@ -1,0 +1,12 @@
+apiVersion: policy.sigstore.dev/v1alpha1
+kind: ClusterImagePolicy
+metadata:
+  name: sample-ko-monorepo
+spec:
+  images:
+  - glob: "ghcr.io/bobymcbobs/sample-ko-monorepo**"
+  authorities:
+  - keyless:
+      identities:
+      - issuer: https://token.actions.githubusercontent.com
+        subjectRegExp: "^(https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/build-and-release.yml@refs/(heads/main|tags/v[0-9].[0-9].[0-9]))$"
