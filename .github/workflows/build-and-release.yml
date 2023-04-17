@@ -32,7 +32,7 @@ jobs:
         env:
           KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
         run: |
-          echo "ko-docker-repo=${KO_DOCKER_REPO,,}" >> $GITHUB_OUTPUTS
+          echo "ko-docker-repo=${KO_DOCKER_REPO,,}" >> $GITHUB_OUTPUT
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ steps.go-version.outputs.version }}
