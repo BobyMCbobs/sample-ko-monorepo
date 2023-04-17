@@ -62,8 +62,27 @@ export KO_DOCKER_REPO=ghcr.io/bobymcbobs/sample-ko-monorepo
 ko resolve --bare -f config/
 ```
 
+## Signatures and attestations
+
+```shell
+cosign tree IMAGE_REF
+```
+
+
+## Verifying
+
+```shell
+cosign verify ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:111764f7b76bce321a4c7dbbcbcc952c1011145f398a8b61cf939ad4620bdc62 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/build-and-release.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com
+```
+
+
+```shell
+cosign verify-attestation ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:111764f7b76bce321a4c7dbbcbcc952c1011145f398a8b61cf939ad4620bdc62 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/build-and-release.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com  | jq -r .payload | base64 -d | jq -r .predicate.Data | bom document outline -
+```
+
 ## TODOs
 
 - [ ] dependency security scanning
 - [ ] automatic dependency updates
 - [ ] Go version upgrade auto-PR
+- [ ] add build dependency cache
