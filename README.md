@@ -80,6 +80,17 @@ cosign verify ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:111764f7b76bce321a4c7
 cosign verify-attestation ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:111764f7b76bce321a4c7dbbcbcc952c1011145f398a8b61cf939ad4620bdc62 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/build-and-release.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com  | jq -r .payload | base64 -d | jq -r .predicate.Data | bom document outline -
 ```
 
+## Troubleshooting
+
+### images fail to push
+
+adjust the actions package access settings in
+1. go to github.com/{{org/user}}
+2. go to the packages tab
+3. click on the package failing
+4. ensure that the Actions repository access is set up to point to the source repo
+5. set _manage Actions access_ role field to `write`
+
 ## TODOs
 
 - [ ] dependency security scanning
