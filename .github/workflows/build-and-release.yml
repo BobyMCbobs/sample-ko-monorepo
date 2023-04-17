@@ -27,16 +27,17 @@ jobs:
       - id: go-version
         run: |
           echo "version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
+      - name: lowercase KO_DOCKER_REPO
+        env:
+          KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
+        run: |
+          echo KO_DOCKER_REPO="${KO_DOCKER_REPO,,}" >> $GITHUB_ENV
       - uses: actions/setup-go@v2
         with:
           go-version: ${{ steps.go-version.outputs.version }}
       - uses: ko-build/setup-ko@v0.6
       - id: build-resolve
-        env:
-          KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
         run: |
-          export KO_DOCKER_REPO="${KO_DOCKER_REPO,,}"
-
           ko resolve --bare -f config/ > ./deploy/release.yaml
       - id: sign-images-and-attest-sbom
         env:
