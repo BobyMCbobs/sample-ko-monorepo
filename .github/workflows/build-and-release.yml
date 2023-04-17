@@ -33,9 +33,10 @@ jobs:
           KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
         run: |
           echo "ko-docker-repo=${KO_DOCKER_REPO,,}" >> $GITHUB_OUTPUT
-      - uses: actions/setup-go@v2
+      - uses: actions/setup-go@v4
         with:
           go-version: ${{ steps.go-version.outputs.version }}
+          cache-dependency-path: go.sum
       - uses: ko-build/setup-ko@v0.6
       - id: build-resolve
         env:
