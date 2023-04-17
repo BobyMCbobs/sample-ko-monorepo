@@ -1,10 +1,8 @@
 builds:
   - id: webthingy
-    dir: .
-    main: ./cmd/webthingy/main.go
+    main: ./cmd/webthingy
   - id: mission-critical-service
-    dir: .
-    main: ./cmd/mission-critical-service/main.go
+    main: ./cmd/mission-critical-service
 
 defaultPlatforms:
   - linux/amd64
