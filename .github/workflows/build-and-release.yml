@@ -24,30 +24,30 @@ jobs:
           gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
           gh auth status
       - uses: sigstore/cosign-installer@main
-      - id: go-version
-        run: |
-          echo "version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
-      - name: lowercase KO_DOCKER_REPO
-        id: lowercase-repo
+      - id: run-info
         env:
           KO_DOCKER_REPO: ghcr.io/${{ github.repository }}
         run: |
+          echo "go-version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
           echo "ko-docker-repo=${KO_DOCKER_REPO,,}" >> $GITHUB_OUTPUT
+          echo "import-paths=$(yq e '.builds[].main' .ko.yaml | xargs)" >> $GITHUB_OUTPUT
       - uses: actions/setup-go@v4
         with:
-          go-version: ${{ steps.go-version.outputs.version }}
+          go-version: ${{ steps.run-info.outputs.go-version }}
           cache-dependency-path: go.sum
       - uses: ko-build/setup-ko@v0.6
-      - id: build-resolve
+      - id: build
         env:
-          KO_DOCKER_REPO: ${{ steps.lowercase-repo.outputs.ko-docker-repo }}
+          KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
+          IMAGE_PATHS: ${{ steps.run-info.outputs.import-paths }}
         run: |
-          ko resolve --bare -f config/ > ./deploy/release.yaml
+          IMAGES=$(ko build --base-import-paths $IMAGE_PATHS)
+          echo "images=$IMAGES" >> $GITHUB_OUTPUT
       - id: sign-images-and-attest-sbom
         env:
           COSIGN_YES: "true"
         run: |
-          for IMAGE in $(yq -N '. | select(.kind == "Service") | .spec.template.spec.containers[].image' ./deploy/release.yaml | xargs); do
+          for IMAGE in ${{ steps.build.outputs.images }}; do
             cosign sign $IMAGE -y
             cosign download sbom $IMAGE > /tmp/sbom-spdx.json
             cosign attest --predicate /tmp/sbom-spdx.json $IMAGE -y
