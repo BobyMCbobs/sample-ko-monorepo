@@ -42,7 +42,7 @@ jobs:
           KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
           IMAGE_PATHS: ${{ steps.run-info.outputs.import-paths }}
         run: |
-          IMAGES=$(ko build $IMAGE_PATHS)
+          IMAGES=$(ko build --base-import-paths $IMAGE_PATHS)
           echo "images=$IMAGES" >> $GITHUB_OUTPUT
       - id: sign-images-and-attest-sbom
         env:
