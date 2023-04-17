@@ -42,17 +42,21 @@ jobs:
           KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
           IMAGE_PATHS: ${{ steps.run-info.outputs.import-paths }}
         run: |
-          IMAGES=$(ko build --base-import-paths $IMAGE_PATHS)
-          echo "images=$IMAGES" >> $GITHUB_OUTPUT
+          IMAGES="$(ko build --base-import-paths $IMAGE_PATHS)"
+          echo "images=$(echo $IMAGES | tr ' ' ',')" >> $GITHUB_OUTPUT
       - id: sign-images-and-attest-sbom
         env:
           COSIGN_YES: "true"
         run: |
-          for IMAGE in ${{ steps.build.outputs.images }}; do
+          for IMAGE in $(echo ${{ steps.build.outputs.images }} | tr ',' ' '); do
             cosign sign $IMAGE -y
             cosign download sbom $IMAGE > /tmp/sbom-spdx.json
             cosign attest --predicate /tmp/sbom-spdx.json $IMAGE -y
           done
+      - name: image result
+        id: result
+        run: |
+          echo "Build, pushed and signed: ${{ steps.build.outputs.images }}"
       - id: release
         if: github.event_name == 'release'
         env:
