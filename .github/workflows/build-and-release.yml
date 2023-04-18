@@ -13,8 +13,27 @@ permissions:
   id-token: write
 
 jobs:
-  build:
+  prepare:
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mikefarah/yq@master
+      - id: set
+        run: |
+          echo "matrix=$(jq '.builds' -r -c <<< "$(yq e . -o json .ko.yaml)")" >> $GITHUB_OUTPUT
+      - name: check output
+        run: |
+          jq . <<< '${{ steps.prepare.outputs.matrix }}'
+
+  build:
+    needs: prepare
+    if: fromJSON(needs.prepare.outputs.matrix) != null
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@v3
       - name: configure system
@@ -31,7 +50,6 @@ jobs:
         run: |
           echo "go-version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
           echo "ko-docker-repo=${KO_DOCKER_REPO,,}" >> $GITHUB_OUTPUT
-          echo "import-paths=$(yq e '.builds[].main' .ko.yaml | xargs)" >> $GITHUB_OUTPUT
       - uses: actions/setup-go@v4
         with:
           go-version: ${{ steps.run-info.outputs.go-version }}
@@ -40,9 +58,9 @@ jobs:
       - id: build
         env:
           KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
-          IMAGE_PATHS: ${{ steps.run-info.outputs.import-paths }}
+          IMAGE_PATH: ${{ fromJSON(toJSON(matrix)).main }}
         run: |
-          IMAGES="$(ko build --base-import-paths $IMAGE_PATHS)"
+          IMAGES="$(ko build --base-import-paths $IMAGE_PATH)"
           echo "images=$(echo $IMAGES | tr ' ' ',')" >> $GITHUB_OUTPUT
       - id: sign-images-and-attest-sbom
         env:
