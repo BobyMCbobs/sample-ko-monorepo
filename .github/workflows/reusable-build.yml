@@ -1,24 +1,12 @@
-name: ko-build
-author: BobyMCbobs
-description: |
-  Generic build for a Go based container application through Ko with container image signing
-branding:
-  icon: 'package'
-  color: 'blue'
-inputs:
-  paths:
-    description: |
-      A space separated list of paths to build images.
-      e.g: "./cmd/app1 ./cmd/thing"
-outputs:
-  images-built:
-    value: ${{ steps.build.outputs.images }}
-    description: |
-      a comma separated list of images built with digests
-    default: ''
-runs:
-  using: composite
-  steps:
+name: Reusable build
+
+on:
+  workflow_call: {}
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
     - uses: actions/checkout@v3
     - name: configure system
       run: |

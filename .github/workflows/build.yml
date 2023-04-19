@@ -16,4 +16,4 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: BobyMCbobs/sample-ko-repo@main
+      - uses: BobyMCbobs/sample-ko-repo/.github/workflows/reusable-build.yml@main
