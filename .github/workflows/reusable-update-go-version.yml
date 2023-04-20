@@ -8,7 +8,7 @@ on:
         default: go.mod
         required: false
       autoMerge:
-        type: bool
+        type: boolean
         default: false
         required: false
 
