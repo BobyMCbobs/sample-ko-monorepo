@@ -35,7 +35,7 @@ jobs:
       - name: commit and push if there are changes
         if: github.event_name == 'release'
         run: |
-          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep deploy/release.yaml; then
+          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep go.mod; then
               echo changes detected
             else
               exit 0
