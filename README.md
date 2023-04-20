@@ -97,3 +97,7 @@ adjust the actions package access settings in
 - [ ] automatic dependency updates
 - [ ] Go version upgrade auto-PR
 - [ ] add build dependency cache
+
+## Related
+
+- [sample-docker-monorepo](https://github.com/BobyMCbobs/sample-docker-monorepo)
