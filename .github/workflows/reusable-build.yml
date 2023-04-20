@@ -29,7 +29,7 @@ jobs:
         if [ -n "${{ inputs.paths }}" ]; then
           echo "paths="${{ inputs.paths }}"" >> $GITHUB_OUTPUT
         else
-          PATHS="$(grep -r 'package main' | sort | cut -d ':' -f1 | grep '.go$' | xargs -n 1 dirname | sort | uniq | grep -v vendor | xargs)"
+          PATHS="$(grep -r 'package main' | sort | cut -d ':' -f1 | grep '.go$' | xargs -n 1 dirname | sort | uniq | grep -v vendor | xargs -i echo './{}' | xargs)"
           echo "paths="$PATHS"" >> $GITHUB_OUTPUT
         fi
     - uses: actions/setup-go@v4
