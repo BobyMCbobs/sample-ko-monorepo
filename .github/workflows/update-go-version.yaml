@@ -20,13 +20,14 @@ jobs:
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
           gh auth status
-      - uses: actions/setup-go@v4
+      - id: setup-go
+        uses: actions/setup-go@v4
         with:
           go-version: stable
       - id: run-info
         name: collect job run info
         run: |
-          echo "go-version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
+          echo "go-version=${{ steps.setup-go.outputs.go-version }}" >> $GITHUB_OUTPUT
       - name: edit Go version to latest
         run: |
           go mod edit -go=${{ steps.run-info.outputs.go-version }}
