@@ -46,7 +46,7 @@ jobs:
             echo "exists=true" >> $GITHUB_OUTPUT
           fi
       - name: create PR
-        if: ${{ steps.existing-pr.outputs.exists != 'true' }}
+        if: ${{ steps.determine-changes.outputs.changes == 'true' && steps.existing-pr.outputs.exists != 'true' }}
         run: |
           TIMESTAMP="$(date +%Y-%m-%d-%H-%M)"
           NEW_BRANCH="update-go-version-to-${{ steps.run-info-outputs.go-version }}-${TIMESTAMP}"
