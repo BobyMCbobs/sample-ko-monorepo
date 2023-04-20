@@ -14,3 +14,5 @@ permissions:
 jobs:
   update-go-version:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-update-go-version.yml@main
+    with:
+      autoMerge: true
