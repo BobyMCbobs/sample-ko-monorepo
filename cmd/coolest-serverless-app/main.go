@@ -15,6 +15,11 @@ import (
 var (
 	defaultLatitude  = "-41.300293"
 	defaultLongitude = "174.780304"
+
+	appStatusPageNotFound     = "Page not found"
+	appStatusHealthHealthy    = "Healthy"
+	appStatusHealthNotHealthy = "Not healthy"
+	appStatusInternalError    = "Internal error"
 )
 
 type handlers struct {
@@ -23,24 +28,24 @@ type handlers struct {
 
 func (h *handlers) pageNotFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, "Page not found")
+	fmt.Fprintf(w, appStatusPageNotFound)
 }
 
 func (h *handlers) getHealth(w http.ResponseWriter, r *http.Request) {
 	if h.weatherMetrics.Temperature == nil || h.weatherMetrics.WindSpeed == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
-		fmt.Fprintf(w, "Not healthy")
+		fmt.Fprintf(w, appStatusHealthNotHealthy)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Healthy")
+	fmt.Fprintf(w, appStatusHealthHealthy)
 }
 
 func (h *handlers) getWeather(w http.ResponseWriter, r *http.Request) {
 	body, err := json.Marshal(h.weatherMetrics)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, "Internal error")
+		fmt.Fprintf(w, appStatusInternalError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
@@ -68,13 +73,11 @@ type CoolestServerlessApp struct {
 
 func NewCoolestServerlessApp() *CoolestServerlessApp {
 	weatherMetrics := &WeatherMetrics{}
-	frontendFolderPath := common.GetServePath()
 	handlers := &handlers{weatherMetrics: weatherMetrics}
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/_healthz", handlers.getHealth)
 	mux.HandleFunc("/api/weather", handlers.getWeather)
-	mux.Handle("/", http.FileServer(http.Dir(frontendFolderPath)))
 
 	handler := common.Logging(mux)
 	return &CoolestServerlessApp{
