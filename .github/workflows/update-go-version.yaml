@@ -1,0 +1,48 @@
+name: update-go-version
+
+on:
+  workflow_dispatch: {}
+
+permissions:
+  packages: write
+  contents: write
+  pull-requests: write
+  id-token: write
+
+jobs:
+  update-go-version:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: configure system
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
+          gh auth status
+      - uses: actions/setup-go@v4
+        with:
+          go-version: stable
+      - id: run-info
+        name: collect job run info
+        run: |
+          echo "go-version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
+      - name: edit Go version to latest
+        run: |
+          go mod edit -go=${{ steps.run-info.outputs.go-version }}
+      - name: commit and push if there are changes
+        if: github.event_name == 'release'
+        run: |
+          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep deploy/release.yaml; then
+              echo changes detected
+            else
+              exit 0
+          fi
+          TIMESTAMP="$(date +%Y-%m-%d-%H-%M)"
+          NEW_BRANCH="update-go-version-to-${{ steps.run-info-outputs.go-version }}-${TIMESTAMP}"
+          git add ./go.mod
+          git branch "${NEW_BRANCH}"
+          git checkout "${NEW_BRANCH}"
+          git commit -s -m "update Go version to ${{ steps.run-info.outputs.go-version }}"
+          git push origin "${NEW_BRANCH}"
+          gh pr create --title "Update Go version to ${{ steps.run-info.outputs.go-version }}" --body "Updates the base version of Go required for this project to ${{ steps.run-info.outputs.go-version }}"
