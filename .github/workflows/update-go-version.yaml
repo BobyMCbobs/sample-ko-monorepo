@@ -42,7 +42,7 @@ jobs:
               exit 0
           fi
           EXISTING_PR="$(gh pr list --json title,labels,body --jq '.' --label update-go-version --search "Update Go version to ${{ steps.run-info.outputs.go-version }}" | jq -r .[].title)"
-          if [ -n "${EXISTING_PR" = "Update Go version to ${{ steps.run-info.outputs.go-version }}" ]; then
+          if [ "${EXISTING_PR" = "Update Go version to ${{ steps.run-info.outputs.go-version }}" ]; then
             echo "PR already exists"
             exit 0
           fi
