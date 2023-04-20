@@ -14,4 +14,4 @@ permissions:
 
 jobs:
   build:
-    uses: BobyMCbobs/sample-ko-repo/.github/workflows/reusable-build.yml@main
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@main
