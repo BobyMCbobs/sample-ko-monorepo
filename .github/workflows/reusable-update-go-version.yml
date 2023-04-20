@@ -33,7 +33,7 @@ jobs:
           go mod edit -go=${{ steps.run-info.outputs.go-version }} ${{ inputs.modfile }}
       - name: commit and push if there are changes
         run: |
-          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep ${{ inputs.modfile }}; then
+          if git diff --name-only --diff-filter=ACMRT | grep ${{ inputs.modfile }}; then
               echo changes detected
             else
               exit 0
