@@ -1,7 +1,12 @@
 name: reusable-update-go-version
 
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      modfile:
+        type: string
+        default: go.mod
+        required: false
 
 jobs:
   update-go-version:
@@ -25,10 +30,10 @@ jobs:
           echo "go-version=$VERSION" >> $GITHUB_OUTPUT
       - name: edit Go version to latest
         run: |
-          go mod edit -go=${{ steps.run-info.outputs.go-version }}
+          go mod edit -go=${{ steps.run-info.outputs.go-version }} ${{ inputs.modfile }}
       - name: commit and push if there are changes
         run: |
-          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep go.mod; then
+          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep ${{ inputs.modfile }}; then
               echo changes detected
             else
               exit 0
@@ -41,7 +46,7 @@ jobs:
 
           TIMESTAMP="$(date +%Y-%m-%d-%H-%M)"
           NEW_BRANCH="update-go-version-to-${{ steps.run-info-outputs.go-version }}-${TIMESTAMP}"
-          git add ./go.mod
+          git add ${{ inputs.modfile }}
           git branch "${NEW_BRANCH}"
           git checkout "${NEW_BRANCH}"
           git commit -s -m "update Go version to ${{ steps.run-info.outputs.go-version }}"
