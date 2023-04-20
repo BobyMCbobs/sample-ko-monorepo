@@ -27,6 +27,11 @@ func (h *handlers) pageNotFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handlers) getHealth(w http.ResponseWriter, r *http.Request) {
+	if h.weatherMetrics.Temperature == nil || h.weatherMetrics.WindSpeed == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		fmt.Fprintf(w, "Not healthy")
+		return
+	}
 	w.WriteHeader(http.StatusOK)
 	fmt.Fprintf(w, "Healthy")
 }
@@ -52,8 +57,8 @@ type OpenMeteoResult struct {
 }
 
 type WeatherMetrics struct {
-	Temperature float64
-	WindSpeed   float64
+	Temperature *float64
+	WindSpeed   *float64
 }
 
 type CoolestServerlessApp struct {
@@ -116,13 +121,14 @@ func (c *CoolestServerlessApp) updateWeatherMetrics() error {
 	if err != nil {
 		return err
 	}
-	c.weatherMetrics.Temperature = result.CurrentWeather.Temperature
-	c.weatherMetrics.WindSpeed = result.CurrentWeather.WindSpeed
-	log.Printf("Weather updated: %+v\n", *c.weatherMetrics)
+	c.weatherMetrics.Temperature = &result.CurrentWeather.Temperature
+	c.weatherMetrics.WindSpeed = &result.CurrentWeather.WindSpeed
+	log.Printf("Weather updated: %+v %+v\n", *c.weatherMetrics.Temperature, *c.weatherMetrics.WindSpeed)
 	return nil
 }
 
 func (c *CoolestServerlessApp) DoUpdateWeatherMetrics() {
+	time.Sleep(time.Second * 10)
 	for {
 		if err := c.updateWeatherMetrics(); err != nil {
 			log.Printf("Failed to update weather metrics, %v\n", err)
