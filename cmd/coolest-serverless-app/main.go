@@ -32,6 +32,10 @@ func (h *handlers) pageNotFound(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handlers) getHealth(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	if h.weatherMetrics.Temperature == nil || h.weatherMetrics.WindSpeed == nil {
 		w.WriteHeader(http.StatusServiceUnavailable)
 		fmt.Fprintf(w, appStatusHealthNotHealthy)
@@ -42,6 +46,10 @@ func (h *handlers) getHealth(w http.ResponseWriter, r *http.Request) {
 }
 
 func (h *handlers) getWeather(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodGet {
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		return
+	}
 	body, err := json.Marshal(h.weatherMetrics)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
