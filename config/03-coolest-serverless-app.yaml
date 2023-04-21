@@ -1,0 +1,16 @@
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: coolest-serverless-app
+  namespace: sample-ko-monorepo
+spec:
+  template:
+    spec:
+      containers:
+        - image: ko://github.com/BobyMCbobs/sample-ko-monorepo/cmd/coolest-serverless-app
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 8080
