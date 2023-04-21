@@ -72,12 +72,12 @@ cosign tree IMAGE_REF
 ## Verifying
 
 ```shell
-cosign verify ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:111764f7b76bce321a4c7dbbcbcc952c1011145f398a8b61cf939ad4620bdc62 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/build-and-release.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com
+cosign verify ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:405b54637c79a0b0934d0d7f01464f358fe1fd118fefb1d9b77c8a351e9471b6 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
 
 ```shell
-cosign verify-attestation ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:111764f7b76bce321a4c7dbbcbcc952c1011145f398a8b61cf939ad4620bdc62 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/build-and-release.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com  | jq -r .payload | base64 -d | jq -r .predicate.Data | bom document outline -
+cosign verify-attestation ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:405b54637c79a0b0934d0d7f01464f358fe1fd118fefb1d9b77c8a351e9471b6 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com  | jq -r .payload | base64 -d | jq -r .predicate.Data | bom document outline -
 ```
 
 ## Troubleshooting
