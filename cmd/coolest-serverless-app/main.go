@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"net/url"
+	"os"
 	"time"
 
 	"github.com/BobyMCbobs/sample-ko-monorepo/pkg/common"
@@ -21,6 +22,22 @@ var (
 	appStatusHealthNotHealthy = "Not healthy"
 	appStatusInternalError    = "Internal error"
 )
+
+func GetEnvOrDefault(env, input string) string {
+	fromEnv, exists := os.LookupEnv(env)
+	if exists {
+		return fromEnv
+	}
+	return input
+}
+
+func GetLatitude() string {
+	return GetEnvOrDefault("LATITUDE", defaultLatitude)
+}
+
+func GetLongitude() string {
+	return GetEnvOrDefault("LONGITUDE", defaultLongitude)
+}
 
 type handlers struct {
 	weatherMetrics *WeatherMetrics
@@ -50,6 +67,10 @@ func (h *handlers) getWeather(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	if h.weatherMetrics.Temperature == nil || h.weatherMetrics.WindSpeed == nil {
+		w.WriteHeader(http.StatusServiceUnavailable)
+		return
+	}
 	body, err := json.Marshal(h.weatherMetrics)
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
@@ -77,6 +98,8 @@ type WeatherMetrics struct {
 type CoolestServerlessApp struct {
 	server         *http.Server
 	weatherMetrics *WeatherMetrics
+	latitude       string
+	longitude      string
 }
 
 func NewCoolestServerlessApp() *CoolestServerlessApp {
@@ -97,6 +120,8 @@ func NewCoolestServerlessApp() *CoolestServerlessApp {
 			MaxHeaderBytes: 1 << 20,
 		},
 		weatherMetrics: weatherMetrics,
+		latitude:       GetLatitude(),
+		longitude:      GetLongitude(),
 	}
 }
 
@@ -111,8 +136,8 @@ func (c *CoolestServerlessApp) updateWeatherMetrics() error {
 		return err
 	}
 	req.URL.RawQuery = url.Values{
-		"latitude":        []string{defaultLatitude},
-		"longitude":       []string{defaultLongitude},
+		"latitude":        []string{c.latitude},
+		"longitude":       []string{c.longitude},
 		"current_weather": []string{"true"},
 		"timezone":        []string{"Pacific/Auckland"},
 	}.Encode()
