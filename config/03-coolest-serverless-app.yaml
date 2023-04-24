@@ -14,3 +14,15 @@ spec:
             readOnlyRootFilesystem: true
           ports:
             - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /api/_healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/_healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
