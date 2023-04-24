@@ -15,5 +15,3 @@ permissions:
 jobs:
   build:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@main
-    with:
-      paths: ./cmd/webthingy
