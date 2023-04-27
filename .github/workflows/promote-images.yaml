@@ -1,0 +1,74 @@
+name: sync
+
+on:
+  push: {}
+  schedule:
+    - cron: "0 0 * * MON"
+  workflow_dispatch: {}
+
+permissions:
+  id-token: write
+  packages: write
+
+env:
+  REGISTRY: ghcr.io/${{ github.repository }}
+
+jobs:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.set.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: mikefarah/yq@master
+      - id: set
+        run: |
+          echo "matrix=$(jq '.' -r -c <<< "$(yq e '.[] | . as $version | .name as $name | .dmap|keys |.[] | . as $digest | $version.dmap[$digest] as $tags | $tags[]|[{"name":$name,"digest":$digest,"tag":.}]' -P images/config.yaml -o json)")" >> $GITHUB_OUTPUT
+      - name: check output
+        run: |
+          jq . <<< '${{ steps.prepare.outputs.matrix }}'
+  sync:
+    if: ${{ fromJSON(needs.prepare.outputs.matrix) != null }}
+    needs: prepare
+    runs-on: ubuntu-latest
+    outputs:
+      source: ${{ steps.get-digests.outputs.source }}
+      destination: ${{ steps.get-digests.outputs.destination }}
+    strategy:
+      matrix:
+        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+      - uses: imjasonh/setup-crane@v0.1
+      - id: run-info
+        name: collect job run info
+        run: |
+          REGISTRY="${REGISTRY,,}"
+          SOURCE="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}@sha256:${{ fromJSON(toJSON(matrix)).digest }}""
+          DESTINATION="${{ steps.run-info.outputs.container-registry }}/${{ fromJSON(toJSON(matrix)).name }}@sha256:${{ fromJSON(toJSON(matrix)).tag }}""
+
+          echo "container-registry=${REGISTRY,,}" >> $GITHUB_OUTPUT
+          echo "source=${SOURCE}" >> $GITHUB_OUTPUT
+          echo "destination=${DESTINATION}" >> $GITHUB_OUTPUT
+      - name: get-digests
+        id: get-digests
+        env:
+          SOURCE: ${{ steps.run-info.outputs.source }}
+          DESTINATION: ${{ steps.run-info.outputs.destination }}
+        run: |
+          SOURCE_DIGEST="$(crane digest "${SOURCE}" || true)"
+          DESTINATION_DIGEST="$(crane digest "${DESTINATION}" || true)"
+          (
+            echo "SOURCE-DIGEST DESTINATION-DIGEST"
+            echo "${SOURCE_DIGEST} ${DESTINATION_DIGEST}"
+          ) | column -t
+          echo "source=${SOURCE_DIGEST}" >> $GITHUB_OUTPUT
+          echo "destination=${DESTINATION_DIGEST}" >> $GITHUB_OUTPUT
+      - name: copy
+        if: ${{ steps.get-digests.outputs.source != steps.get-digests.outputs.destination || steps.get-digests.outputs.destination == null }}
+        env:
+          SOURCE: ${{ steps.run-info.outputs.source }}
+          DESTINATION: ${{ steps.run-info.outputs.destination }}
+        run: |
+          crane cp $SOURCE $DESTINATION
