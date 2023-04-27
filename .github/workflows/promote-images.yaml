@@ -46,8 +46,8 @@ jobs:
         name: collect job run info
         run: |
           REGISTRY="${REGISTRY,,}"
-          SOURCE="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}@${{ fromJSON(toJSON(matrix)).digest }}""
-          DESTINATION="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}:${{ fromJSON(toJSON(matrix)).tag }}""
+          SOURCE="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}@${{ fromJSON(toJSON(matrix)).digest }}"
+          DESTINATION="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}:${{ fromJSON(toJSON(matrix)).tag }}"
 
           echo "container-registry=${REGISTRY,,}" >> $GITHUB_OUTPUT
           echo "source=${SOURCE}" >> $GITHUB_OUTPUT
@@ -58,7 +58,7 @@ jobs:
           SOURCE: ${{ steps.run-info.outputs.source }}
           DESTINATION: ${{ steps.run-info.outputs.destination }}
         run: |
-          SOURCE_DIGEST="$(crane digest "${SOURCE}" || true)"
+          SOURCE_DIGEST="$(crane digest "${SOURCE}")"
           DESTINATION_DIGEST="$(crane digest "${DESTINATION}" || true)"
           (
             echo "SOURCE-DIGEST DESTINATION-DIGEST"
