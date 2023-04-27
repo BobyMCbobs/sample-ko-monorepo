@@ -15,4 +15,4 @@ permissions:
 
 jobs:
   promote:
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@main
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-image-promotion.yml@main
