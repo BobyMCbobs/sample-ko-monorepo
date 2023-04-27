@@ -26,10 +26,10 @@ jobs:
       - uses: mikefarah/yq@master
       - id: set
         run: |
-          echo "matrix=$(jq '.' -rcMs <<< "$(yq e '.[] | . as $version | .name as $name | .dmap|keys |.[] | . as $digest | $version.dmap[$digest] as $tags | $tags[]|[{"name":$name,"digest":$digest,"tag":.}]' -P images/config.yaml -o json)")" >> $GITHUB_OUTPUT
+          echo "matrix=$(jq . -rcMs <<< "$(yq e '.[] | . as $version | .name as $name | .dmap|keys |.[] | . as $digest | $version.dmap[$digest] as $tags | $tags[]|[{"name":$name,"digest":$digest,"tag":.}]' -P images/config.yaml -o json)")" >> $GITHUB_OUTPUT
       - name: check output
         run: |
-          jq . <<< '${{ steps.prepare.outputs.matrix }}'
+          jq . <<< '${{ steps.set.outputs.matrix }}'
 
   promote:
     if: ${{ fromJSON(needs.prepare.outputs.matrix) != null }}
@@ -47,7 +47,7 @@ jobs:
         run: |
           REGISTRY="${REGISTRY,,}"
           SOURCE="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}@sha256:${{ fromJSON(toJSON(matrix)).digest }}""
-          DESTINATION="${{ steps.run-info.outputs.container-registry }}/${{ fromJSON(toJSON(matrix)).name }}@sha256:${{ fromJSON(toJSON(matrix)).tag }}""
+          DESTINATION="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}:${{ fromJSON(toJSON(matrix)).tag }}""
 
           echo "container-registry=${REGISTRY,,}" >> $GITHUB_OUTPUT
           echo "source=${SOURCE}" >> $GITHUB_OUTPUT
