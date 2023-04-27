@@ -1,4 +1,4 @@
-name: promote images
+name: reusable promote images
 
 on:
   workflow_call:
