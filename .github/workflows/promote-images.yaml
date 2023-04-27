@@ -30,13 +30,11 @@ jobs:
       - name: check output
         run: |
           jq . <<< '${{ steps.prepare.outputs.matrix }}'
-  sync:
+
+  promote:
     if: ${{ fromJSON(needs.prepare.outputs.matrix) != null }}
     needs: prepare
     runs-on: ubuntu-latest
-    outputs:
-      source: ${{ steps.get-digests.outputs.source }}
-      destination: ${{ steps.get-digests.outputs.destination }}
     strategy:
       matrix:
         include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
