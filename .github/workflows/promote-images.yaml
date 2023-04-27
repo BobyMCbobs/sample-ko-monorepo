@@ -46,7 +46,7 @@ jobs:
         name: collect job run info
         run: |
           REGISTRY="${REGISTRY,,}"
-          SOURCE="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}@sha256:${{ fromJSON(toJSON(matrix)).digest }}""
+          SOURCE="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}@${{ fromJSON(toJSON(matrix)).digest }}""
           DESTINATION="$REGISTRY/${{ fromJSON(toJSON(matrix)).name }}:${{ fromJSON(toJSON(matrix)).tag }}""
 
           echo "container-registry=${REGISTRY,,}" >> $GITHUB_OUTPUT
