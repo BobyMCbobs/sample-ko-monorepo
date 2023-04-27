@@ -4,7 +4,8 @@ on:
   push:
     paths:
       - images/config.yaml
-      - .github/workflows/promote-images.yaml
+      - .github/workflows/image-promotion.yaml
+      - .github/workflows/reusable-promote-images.yaml
   schedule:
     - cron: "0 0 * * MON"
   workflow_dispatch: {}
