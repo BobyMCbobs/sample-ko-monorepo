@@ -20,4 +20,4 @@ jobs:
     needs: build
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-scan.yml@main
     with:
-      imageRefs: ${{ jobs.build.outputs.images }}
+      imageRefs: ${{ needs.build.outputs.images }}
