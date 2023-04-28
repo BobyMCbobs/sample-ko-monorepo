@@ -11,7 +11,13 @@ permissions:
   contents: write
   pull-requests: write
   id-token: write
+  security-events: write
 
 jobs:
   build:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@main
+  scan:
+    needs: build
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-scan.yml@main
+    with:
+      imageRefs: ${{ jobs.build.outputs.images }}
