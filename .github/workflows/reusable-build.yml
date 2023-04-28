@@ -8,7 +8,7 @@ on:
         type: string
     outputs:
       images:
-        value: ${{ steps.build.outputs.images }}
+        value: ${{ jobs.build.outputs.images }}
 
 jobs:
   build:
