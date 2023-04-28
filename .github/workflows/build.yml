@@ -15,8 +15,6 @@ permissions:
 
 jobs:
   build:
-    outputs:
-      images: ${{ steps.build.outputs.images }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@main
   scan:
     needs: build

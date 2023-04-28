@@ -6,6 +6,9 @@ on:
       paths:
         required: false
         type: string
+    outputs:
+      images:
+        value: ${{ steps.build.outputs.images }}
 
 jobs:
   build:
