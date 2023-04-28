@@ -7,7 +7,7 @@ on:
         required: true
         type: string
         description: |
-          a ref to a container image
+          a comma separated list of refs to a container image (one or more)
           e.g:
             - docker.io/library/nginx:stable
             - ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:7ec264f3bd6344ae7525e88a69a4e7f6e6b3eaf11549fb889e31a2861df27923
@@ -31,6 +31,9 @@ jobs:
   scan:
     needs: prepare
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
     - uses: actions/checkout@v3
     - uses: actions/setup-go@v4
@@ -48,7 +51,7 @@ jobs:
     - name: get-digests
       id: get-digests
       env:
-        DESTINATION: ${{ inputs.imageRef }}
+        DESTINATION: ${{ fromJSON(toJSON(matrix)).target }}
       run: |
         DESTINATION_DIGEST="$(crane digest "${DESTINATION}" || true)"
         (
@@ -60,7 +63,7 @@ jobs:
       if: ${{ steps.get-digests.outputs.destination != null }}
       uses: aquasecurity/trivy-action@master
       with:
-        image-ref: '${{ inputs.imageRef }}'
+        image-ref: '${{ fromJSON(toJSON(matrix)).target }}'
         format: 'sarif'
         output: 'trivy-results.sarif'
         # format: 'table'
