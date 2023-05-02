@@ -2,16 +2,16 @@ name: reusable build
 
 on:
   workflow_call:
-    registryOverride:
-      required: false
-      type: string
-      description: |
-        a container registry to use instead of ghcr.io.
-        e.g:
-          - quay.io
-          - registry.gitlab.com/somecoolproject
-          - ghcr.io/somecoolproject/thing
     inputs:
+      registryOverride:
+        required: false
+        type: string
+        description: |
+          a container registry to use instead of ghcr.io.
+          e.g:
+            - quay.io
+            - registry.gitlab.com/somecoolproject
+            - ghcr.io/somecoolproject/thing
       paths:
         required: false
         type: string
