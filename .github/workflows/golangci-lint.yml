@@ -1,0 +1,10 @@
+name: reusable golangci lint
+on:
+  push: {}
+  pull_request: {}
+permissions:
+  contents: read
+  pull-requests: read
+jobs:
+  golangci:
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-golangci-lint.yml@main
