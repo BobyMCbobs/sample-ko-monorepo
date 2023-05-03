@@ -109,6 +109,7 @@ func NewCoolestServerlessApp() *CoolestServerlessApp {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/_healthz", handlers.getHealth)
 	mux.HandleFunc("/api/weather", handlers.getWeather)
+	mux.HandleFunc("/{.*}", handlers.pageNotFound)
 
 	handler := common.Logging(mux)
 	return &CoolestServerlessApp{
