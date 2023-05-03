@@ -1,4 +1,4 @@
-name: reusable golangci lint
+name: golangci lint
 on:
   workflow_call: {}
 jobs:
@@ -9,8 +9,7 @@ jobs:
       - id: run-info
         name: collect job run info
         run: |
-          version="$(echo ${{ steps.setup-go.outputs.go-version }} | grep -eo --color=never '([0-9].[0-9]{2})')"
-          echo "go-version=$version" >> $github_output
+          echo "go-version=$(go list -f {{.GoVersion}} -m)" >> $GITHUB_OUTPUT
       - uses: actions/setup-go@v4
         with:
           go-version: ${{ steps.run-info.outputs.go-version }}
