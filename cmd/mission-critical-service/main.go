@@ -36,6 +36,7 @@ func NewMissionCritialService() *MissionCritialService {
 	mux.HandleFunc("/api/_healthz", getHealth)
 	mux.HandleFunc("/api/number", getAPINumber)
 	mux.Handle("/", http.FileServer(http.Dir(frontendFolderPath)))
+	mux.HandleFunc("/{.*}", pageNotFound)
 
 	handler := common.Logging(mux)
 	return &MissionCritialService{
