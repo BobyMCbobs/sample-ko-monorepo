@@ -1,6 +1,9 @@
 name: reusable golangci lint
 on:
-  push: {}
+  workflow_dispatch: {}
+  push:
+    branches:
+      - ${{ github.event.repository.default_branch }}
   pull_request: {}
 permissions:
   contents: read
