@@ -4,9 +4,21 @@
 
 ## Features
 
-- build each application, where defined in [config/](./config)
+- build each application, where Go package main entrypoints are
 - sign container images with [Cosign](https://docs.sigstore.dev/cosign/overview/)
-- upload [resolved](https://ko.build/reference/ko_resolve/) manifest to release
+
+## Automations
+
+| Name              | Description                                                                     | Link |
+|                   |                                                                                 |      |
+|-------------------|---------------------------------------------------------------------------------|------|
+| Build             | Builds and signs Go based container images (ko, cosign)                         | [link](.github/workflows/build.yml) |
+| Lint              | Lints for code quality (golangci)                                               | [link](.github/workflows/golangci-lint.yml) |
+| Image promotion   | Tags images using image digests                                                 | [link](.github/workflows/image-promotion.yml) |
+| Conform           | Ensures that commits in PRs are standardised                                    | [link](.github/workflows/policy-conformance.yml) |
+| Update Go version | Ensures that the Go version which the applications use, is on the latest stable | [link](.github/workflows/update-go-version.yaml) |
+
+all of the actions are implementing reusable workflows.
 
 ## Usage
 
@@ -20,18 +32,21 @@
 
 ### Set up
 
-1. generate a cosign key pair
-```shell
-cosign generate-key-pair
+1. under Settings -> Code and automation -> Actions -> General, set _Allow GitHub Actions to create and approve pull requests_ to `true`
+
+2. add a branch protection rule under Settings -> Code and automation -> Add rule
+entering
+
+```yaml
+Branch name pattern: main
+Require a pull request before merging: true
+Require status checks to pass before merging: true
+  Require branches to be up to date before merging: true
+  Status checks:
+    - golangci / lint
+    - conform / conform
+Require signed commits
 ```
-
-2. set GitHub secrets with `COSIGN_PRIVATE_KEY` with the contents of `cosign.key` and `COSIGN_PASSWORD` with the password (if applicable)
-
-3. commit the public key `cosign.pub` to the root of the repo
-
-4. under Settings -> Code and automation -> Actions -> General, set _Allow GitHub Actions to create and approve pull requests_ to `true`
-
-alternative: import existing keys if using them
 
 ## Install products
 
@@ -71,10 +86,13 @@ cosign tree IMAGE_REF
 
 ## Verifying
 
+container images are able to be verified with the following command
+
 ```shell
 cosign verify ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:405b54637c79a0b0934d0d7f01464f358fe1fd118fefb1d9b77c8a351e9471b6 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com
 ```
 
+SBOMs attestations are able to be verified with the following command
 
 ```shell
 cosign verify-attestation ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:405b54637c79a0b0934d0d7f01464f358fe1fd118fefb1d9b77c8a351e9471b6 --certificate-identity https://github.com/BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@refs/heads/main --certificate-oidc-issuer https://token.actions.githubusercontent.com  | jq -r .payload | base64 -d | jq -r .predicate.Data | bom document outline -
@@ -95,8 +113,8 @@ adjust the actions package access settings in
 
 - [ ] dependency security scanning
 - [ ] automatic dependency updates
-- [ ] Go version upgrade auto-PR
-- [ ] add build dependency cache
+- [x] Go version upgrade auto-PR
+- [x] add build dependency cache
 
 ## Related
 
