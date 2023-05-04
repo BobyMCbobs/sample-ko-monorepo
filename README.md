@@ -34,6 +34,20 @@ all of the actions are implementing reusable workflows.
 
 1. under Settings -> Code and automation -> Actions -> General, set _Allow GitHub Actions to create and approve pull requests_ to `true`
 
+2. add a branch protection rule under Settings -> Code and automation -> Add rule
+entering
+
+```yaml
+Branch name pattern: main
+Require a pull request before merging: true
+Require status checks to pass before merging: true
+  Require branches to be up to date before merging: true
+  Status checks:
+    - golangci / lint
+    - conform / conform
+Require signed commits
+```
+
 ## Install products
 
 launch a local kind cluster, pre-installed with Knative
