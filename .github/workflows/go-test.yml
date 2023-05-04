@@ -1,0 +1,8 @@
+name: go test
+on:
+  push: {}
+  pull_request: {}
+  workflow_dispatch: {}
+jobs:
+  build:
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-test.yml@main
