@@ -24,3 +24,7 @@ func GetEnvOrDefault(envName string, defaultValue string) (output string) {
 func GetServePath() string {
 	return GetEnvOrDefault("KO_DATA_PATH", "./cmd/mission-critical-service/kodata")
 }
+
+func GetAppPort() string {
+	return GetEnvOrDefault("APP_PORT", ":8080")
+}
