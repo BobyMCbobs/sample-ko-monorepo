@@ -38,6 +38,7 @@ type MissionCritialService struct {
 
 func NewMissionCritialService() *MissionCritialService {
 	frontendFolderPath := common.GetServePath()
+	appPort := common.GetAppPort()
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/_healthz", getHealth)
 	mux.HandleFunc("/api/number", getAPINumber)
@@ -47,7 +48,7 @@ func NewMissionCritialService() *MissionCritialService {
 	handler := common.Logging(mux)
 	return &MissionCritialService{
 		server: &http.Server{
-			Addr:           ":8080",
+			Addr:           appPort,
 			Handler:        handler,
 			ReadTimeout:    10 * time.Second,
 			WriteTimeout:   10 * time.Second,
