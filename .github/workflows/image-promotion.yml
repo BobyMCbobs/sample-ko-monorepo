@@ -2,6 +2,10 @@ name: promote images
 
 on:
   push:
+    branches:
+      - main
+      - master
+      - canon
     paths:
       - images/config.yaml
       - .github/workflows/image-promotion.yml
@@ -17,3 +21,5 @@ permissions:
 jobs:
   promote:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-image-promotion.yml@main
+    with:
+      configPath: ./images/config.yaml
