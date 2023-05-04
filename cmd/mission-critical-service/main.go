@@ -10,20 +10,26 @@ import (
 	"github.com/BobyMCbobs/sample-ko-monorepo/pkg/common"
 )
 
+func httpMustWriteResponse(i int, err error) {
+	if err != nil {
+		log.Println("error writing response:", err)
+	}
+}
+
 func pageNotFound(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, "Page not found")
+	httpMustWriteResponse(w.Write([]byte("Page not found")))
 }
 
 func getHealth(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "Healthy")
+	httpMustWriteResponse(w.Write([]byte("Healthy")))
 }
 
 func getAPINumber(w http.ResponseWriter, r *http.Request) {
 	p, _ := rand.Prime(rand.Reader, 64)
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, "%v", p)
+	httpMustWriteResponse(w.Write([]byte(fmt.Sprintf("%v", p))))
 }
 
 type MissionCritialService struct {

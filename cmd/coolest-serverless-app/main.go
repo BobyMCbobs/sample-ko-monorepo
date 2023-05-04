@@ -3,7 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
+	"io"
 	"log"
 	"net/http"
 	"net/url"
@@ -22,6 +22,12 @@ var (
 	appStatusHealthNotHealthy = "Not healthy"
 	appStatusInternalError    = "Internal error"
 )
+
+func httpMustWriteResponse(i int, err error) {
+	if err != nil {
+		log.Println("error writing response:", err)
+	}
+}
 
 func GetEnvOrDefault(env, input string) string {
 	fromEnv, exists := os.LookupEnv(env)
@@ -44,27 +50,25 @@ type handlers struct {
 }
 
 func (h *handlers) pageNotFound(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusNotFound)
-	fmt.Fprintf(w, appStatusPageNotFound)
+	http.Error(w, appStatusPageNotFound, http.StatusNotFound)
 }
 
 func (h *handlers) getHealth(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		http.Error(w, "", http.StatusMethodNotAllowed)
 		return
 	}
 	if h.weatherMetrics.Temperature == nil || h.weatherMetrics.WindSpeed == nil {
-		w.WriteHeader(http.StatusServiceUnavailable)
-		fmt.Fprintf(w, appStatusHealthNotHealthy)
+		http.Error(w, appStatusHealthNotHealthy, http.StatusServiceUnavailable)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, appStatusHealthHealthy)
+	httpMustWriteResponse(w.Write([]byte(appStatusHealthHealthy)))
 }
 
 func (h *handlers) getWeather(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
-		w.WriteHeader(http.StatusMethodNotAllowed)
+		http.Error(w, "", http.StatusMethodNotAllowed)
 		return
 	}
 	if h.weatherMetrics.Temperature == nil || h.weatherMetrics.WindSpeed == nil {
@@ -73,12 +77,11 @@ func (h *handlers) getWeather(w http.ResponseWriter, r *http.Request) {
 	}
 	body, err := json.Marshal(h.weatherMetrics)
 	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		fmt.Fprintf(w, appStatusInternalError)
+		http.Error(w, appStatusInternalError, http.StatusInternalServerError)
 		return
 	}
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, string(body))
+	httpMustWriteResponse(w.Write([]byte(body)))
 }
 
 type OpenMeteoResultCurrentWeather struct {
@@ -146,7 +149,7 @@ func (c *CoolestServerlessApp) updateWeatherMetrics() error {
 	if err != nil {
 		return err
 	}
-	respBody, err := ioutil.ReadAll(resp.Body)
+	respBody, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return err
 	}
