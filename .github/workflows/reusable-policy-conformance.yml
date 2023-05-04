@@ -1,17 +1,6 @@
-name: policy conformance
-
+name: reusable policy conformance
 on:
   workflow_call: {}
-  pull_request:
-    branches:
-      - main
-
-permissions:
-  statuses: write
-  checks: write
-  contents: read
-  pull-requests: read
-
 jobs:
   conform:
     runs-on: ubuntu-latest
