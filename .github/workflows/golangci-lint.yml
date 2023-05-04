@@ -3,7 +3,9 @@ on:
   workflow_dispatch: {}
   push:
     branches:
-      - ${{ github.event.repository.default_branch }}
+      - main
+      - master
+      - canon
   pull_request: {}
 permissions:
   contents: read
