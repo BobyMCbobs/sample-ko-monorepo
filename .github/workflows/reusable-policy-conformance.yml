@@ -17,8 +17,11 @@ jobs:
     steps:
       - uses: actions/checkout@v3
         with:
-          fetch-depth: 2
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
       - name: conform
-        uses: siderolabs/conform@7d9dec0f2f2f72194f176324a68a5792de422f6e # main
+        uses: docker://ghcr.io/siderolabs/conform:v0.1.0-alpha.27
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          args: enforce --commit-ref=refs/heads/${{ github.head_ref }} --reporter=github
+        env:
+          INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
