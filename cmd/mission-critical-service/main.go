@@ -23,7 +23,7 @@ func getHealth(w http.ResponseWriter, r *http.Request) {
 func getAPINumber(w http.ResponseWriter, r *http.Request) {
 	p, _ := rand.Prime(rand.Reader, 64)
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprintf(w, fmt.Sprintf("%v", p))
+	fmt.Fprintf(w, "%v", p)
 }
 
 type MissionCritialService struct {
