@@ -4,7 +4,7 @@ on:
     inputs:
       config:
         type: string
-        default: false
+        required: false
         description: |
           a .golangci.yml configuration file.
           Warning: setting this field will override an existing config
