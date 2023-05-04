@@ -9,12 +9,12 @@
 
 ## Automations
 
-| Name              | Description                                                                     | Link |
-|                   |                                                                                 |      |
-|-------------------|---------------------------------------------------------------------------------|------|
-| Build             | Builds and signs Go based container images (ko, cosign)                         | [link](.github/workflows/build.yml) |
-| Lint              | Lints for code quality (golangci)                                               | [link](.github/workflows/golangci-lint.yml) |
-| Image promotion   | Tags images using image digests                                                 | [link](.github/workflows/image-promotion.yml) |
+| Name              | Description                                                                     | Link                                             |
+|-------------------|---------------------------------------------------------------------------------|--------------------------------------------------|
+| Build             | Builds and signs Go based container images (ko, cosign)                         | [link](.github/workflows/build.yml)              |
+| Go test           | Runs `go test` against the repo                                                 | [link](.github/workflows/go-test.yml)            |
+| Lint              | Lints for code quality (golangci)                                               | [link](.github/workflows/golangci-lint.yml)      |
+| Image promotion   | Tags images using image digests                                                 | [link](.github/workflows/image-promotion.yml)    |
 | Conform           | Ensures that commits in PRs are standardised                                    | [link](.github/workflows/policy-conformance.yml) |
 | Update Go version | Ensures that the Go version which the applications use, is on the latest stable | [link](.github/workflows/update-go-version.yaml) |
 
