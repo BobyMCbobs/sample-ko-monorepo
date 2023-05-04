@@ -1,11 +1,19 @@
 name: golangci lint
 on:
-  workflow_call: {}
+  workflow_call:
+    inputs:
+      config:
+        type: string
+        default: false
+        description: |
+          a .golangci.yml configuration file.
+          Warning: setting this field will override an existing config
 jobs:
   golangci:
     name: lint
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v3
       - id: run-info
         name: collect job run info
         run: |
@@ -14,7 +22,11 @@ jobs:
         with:
           go-version: ${{ steps.run-info.outputs.go-version }}
           cache: false
-      - uses: actions/checkout@v3
+      - name: write .golangci.yml
+        if: ${{ inputs.config != null }}
+        run: |
+          echo "Using config:"
+          echo '${{ inputs.config }}' | tee .golangci.yml
       - name: golangci-lint
         uses: golangci/golangci-lint-action@v3
         with:
