@@ -1,0 +1,20 @@
+name: reusable github action validator
+on:
+  workflow_call: {}
+jobs:
+  actions-validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          submodules: true
+      - name: Install action-validator with asdf
+        uses: asdf-vm/actions/install@75bab86b342b8aa14f3b547296607599522cbe90 # v2.1.0
+        with:
+          tool_versions: |
+            action-validator 0.1.2
+      - name: Lint Actions
+        run: |
+          find .github/workflows -type f \( -iname \*.yaml -o -iname \*.yml \) \
+            | xargs -I {} action-validator --verbose {}
