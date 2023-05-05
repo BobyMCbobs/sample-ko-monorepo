@@ -2,6 +2,7 @@ name: go container apps
 
 on:
   push: {}
+  pull_request: {}
   schedule:
     - cron: "0 0 * * MON"
   release:
@@ -20,3 +21,5 @@ permissions:
 jobs:
   build:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-container-apps.yml@main
+    # with:
+    #   updateGoVersionAutoMerge: true
