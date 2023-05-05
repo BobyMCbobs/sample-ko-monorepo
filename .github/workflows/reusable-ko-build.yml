@@ -17,6 +17,13 @@ on:
         description: |
           the Go entrypoint paths for applications, where there they have `package main`
           e.g: ./cmd/thing1 ./cmd/thing2
+      configPath:
+        required: false
+        default: ./config/
+        type: string
+        description: |
+          the path to resolvable YAML files.
+          see: https://ko.build/features/k8s/#ko-resolve
     outputs:
       images:
         value: ${{ jobs.build.outputs.images }}
@@ -76,3 +83,29 @@ jobs:
         id: result
         run: |
           echo "Build, pushed and signed: $(echo ${{ steps.build.outputs.images }} | tr ',' ' ')"
+      - id: build-release
+        if: github.event_name == 'release' && inputs.configPath
+        run: |
+          ko resolve --base-import-paths -f config/ > ./deploy/release.yaml
+      - id: release
+        if: github.event_name == 'release' && inputs.configPath
+        env:
+          GITHUB_TOKEN: ${{ github.TOKEN }}
+        run: |
+          gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml --clobber
+      - name: commit and push if there are changes
+        if: github.event_name == 'release' && inputs.configPath
+        run: |
+          if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep deploy/release.yaml; then
+              echo changes detected
+            else
+              exit 0
+          fi
+          TIMESTAMP="$(date +%Y-%m-%d-%H-%M)"
+          NEW_BRANCH="deploy-release-manifest-for-version-${{ github.event.release.tag_name }}-${TIMESTAMP}"
+          git add ./deploy/release.yaml
+          git branch "${NEW_BRANCH}"
+          git checkout "${NEW_BRANCH}"
+          git commit -s -m "deploy release manifest for version ${{ github.event.release.tag_name }}"
+          git push origin "${NEW_BRANCH}"
+          gh pr create --title "Update release manifest for version ${{ github.event.release.tag_name }}" --body "Updates to include the release manifest for version ${{ github.event.release.tag_name }}"
