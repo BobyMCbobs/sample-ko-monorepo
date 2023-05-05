@@ -1,8 +1,0 @@
-name: go vet
-on:
-  push: {}
-  pull_request: {}
-  workflow_dispatch: {}
-jobs:
-  build:
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-vet.yml@main
