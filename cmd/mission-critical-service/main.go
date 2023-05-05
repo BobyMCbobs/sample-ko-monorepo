@@ -32,6 +32,12 @@ func getAPINumber(w http.ResponseWriter, r *http.Request) {
 	httpMustWriteResponse(w.Write([]byte(fmt.Sprintf("%v", p))))
 }
 
+func getAPIMessage(w http.ResponseWriter, r *http.Request) {
+	message := `welcome!`
+	w.WriteHeader(http.StatusOK)
+	httpMustWriteResponse(w.Write([]byte(message)))
+}
+
 type MissionCritialService struct {
 	server *http.Server
 }
@@ -42,6 +48,7 @@ func NewMissionCritialService() *MissionCritialService {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/api/_healthz", getHealth)
 	mux.HandleFunc("/api/number", getAPINumber)
+	mux.HandleFunc("/api/message", getAPIMessage)
 	mux.Handle("/", http.FileServer(http.Dir(frontendFolderPath)))
 	mux.HandleFunc("/{.*}", pageNotFound)
 

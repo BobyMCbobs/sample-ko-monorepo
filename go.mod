@@ -1,3 +1,3 @@
 module github.com/BobyMCbobs/sample-ko-monorepo
 
-go 1.20
+go 1.19
