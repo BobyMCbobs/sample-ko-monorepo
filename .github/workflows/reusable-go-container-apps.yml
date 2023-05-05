@@ -35,7 +35,7 @@ jobs:
     with:
       configPath: ./images/config.yaml
   policy-conformance:
-    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'pull_request' }}
+    if: ${{ (github.event_name == 'workflow_call' || github.event_name == 'pull_request' || github.event_name == 'push') && github.head_ref != 'main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-policy-conformance.yml@main
   update-go-version:
     if: ${{ github.event_name == 'workflow_call' || github.event_name == 'schedule' }}
