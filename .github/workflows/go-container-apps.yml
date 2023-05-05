@@ -1,0 +1,22 @@
+name: go container apps
+
+on:
+  push: {}
+  schedule:
+    - cron: "0 0 * * MON"
+  release:
+    types: [published]
+  workflow_dispatch: {}
+
+permissions:
+  packages: write
+  contents: write
+  pull-requests: write
+  id-token: write
+  security-events: write
+  statuses: write
+  checks: write
+
+jobs:
+  build:
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-container-apps.yml@main
