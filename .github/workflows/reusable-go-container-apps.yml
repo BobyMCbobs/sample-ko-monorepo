@@ -90,7 +90,7 @@ jobs:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-vet.yml@main
   image-promotion:
     if: ${{ (github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'schedule') && github.ref == 'refs/heads/main' }}
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-image-promotion.yml@main
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-promotion.yml@main
     with:
       registryOverride: ${{ inputs.registryOverride }}
       configPath: ${{ inputs.imagePromotionConfigPath }}
