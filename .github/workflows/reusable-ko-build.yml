@@ -85,6 +85,8 @@ jobs:
           echo "Build, pushed and signed: $(echo ${{ steps.build.outputs.images }} | tr ',' ' ')"
       - id: build-release
         if: github.event_name == 'release' && inputs.configPath
+        env:
+          KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
         run: |
           ko resolve --base-import-paths -f config/ > ./deploy/release.yaml
       - id: release
