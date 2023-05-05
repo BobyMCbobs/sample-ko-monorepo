@@ -2,6 +2,12 @@ name: reusable go container apps
 on:
   workflow_call: {}
 jobs:
+  debug:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - run: |
+          echo '${{ toJSON(github) }}' | jq .
   build:
     if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'release' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-build.yml@main
@@ -12,24 +18,24 @@ jobs:
     with:
       imageRefs: ${{ needs.build.outputs.images }}
   gofmt:
-    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event.pull_request != null }}
+    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-gofmt.yml@main
   golangci-lint:
-    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event.pull_request != null }}
+    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' && github.head_ref == 'main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-golangci-lint.yml@main
   go-test:
-    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event.pull_request != null }}
+    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-test.yml@main
   go-vet:
-    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event.pull_request != null }}
+    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-vet.yml@main
   image-promotion:
-    if: ${{ (github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'schedule') && github.base_ref == 'main' }}
+    if: ${{ (github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'schedule') && github.head_ref == 'main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-image-promotion.yml@main
     with:
       configPath: ./images/config.yaml
   policy-conformance:
-    if: ${{ github.event_name == 'workflow_call' || github.event.pull_request != null }}
+    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'pull_request' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-policy-conformance.yml@main
   update-go-version:
     if: ${{ github.event_name == 'workflow_call' || github.event_name == 'schedule' }}
