@@ -9,9 +9,16 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
+      - id: ref
+        run: |
+          REF='${{ github.ref }}'
+          if [ -n '${{ github.head_ref }}' ]; then
+            REF='refs/heads/${{ github.head_ref }}'
+          fi
+          echo "ref=$ref" >> $GITHUB_OUTPUT
       - name: conform
         uses: docker://ghcr.io/siderolabs/conform:v0.1.0-alpha.27
         with:
-          args: enforce --commit-ref=refs/heads/${{ github.head_ref }} --reporter=github
+          args: enforce --commit-ref=${{ steps.ref.outputs.ref }} --reporter=github
         env:
           INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
