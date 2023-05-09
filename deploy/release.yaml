@@ -2,6 +2,8 @@ apiVersion: v1
 kind: Namespace
 metadata:
   name: sample-ko-monorepo
+  labels:
+    policy.sigstore.dev/include: "true"
 
 ---
 apiVersion: serving.knative.dev/v1
@@ -13,7 +15,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:2acd7633fb72973922218369f366d4ad1f510ca2366362a3fbe01d47269bf8bd
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:cf682c40d8ee7bce64f38162aa5cc0f0bccd6ae47df126e9f5bb200b266243ef
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -31,12 +33,42 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo@sha256:22dc4783356f64d8e1dd6d56a7850889dfa405cb084f1b1dd46a9fa505d68d96
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:f249ba3c18289e916e68d8f6181310da0085862f7e01851c53f65a76590f9713
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
             readOnlyRootFilesystem: true
           ports:
             - containerPort: 8080
+
+---
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: coolest-serverless-app
+  namespace: sample-ko-monorepo
+spec:
+  template:
+    spec:
+      containers:
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/coolest-serverless-app@sha256:2ef33ab34d25a446138146c9db7061c9ba8119d1d7660c1bd6bd18ac8ffe8a84
+          securityContext:
+            runAsUser: 1000
+            runAsGroup: 1000
+            readOnlyRootFilesystem: true
+          ports:
+            - containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /api/_healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /api/_healthz
+              port: 8080
+            initialDelaySeconds: 5
+            periodSeconds: 5
 
 ---
