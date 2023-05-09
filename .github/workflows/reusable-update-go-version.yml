@@ -73,4 +73,4 @@ jobs:
       - name: merge PR
         if: ${{ inputs.autoMerge && steps.determine-changes.outputs.changes == 'true' && steps.existing-pr.outputs.exists != 'true' }}
         run: |
-          gh pr merge --merge --auto ${{ steps.create-pr.outputs.new-branch }}
+          gh pr merge --merge --admin ${{ steps.create-pr.outputs.new-branch }}
