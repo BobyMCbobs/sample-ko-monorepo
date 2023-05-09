@@ -10,6 +10,7 @@ on:
   workflow_dispatch: {}
 
 permissions:
+  actions: read
   packages: write
   contents: write
   pull-requests: write
