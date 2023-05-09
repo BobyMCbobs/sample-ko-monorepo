@@ -45,6 +45,12 @@ jobs:
         if: ${{ env.quay-robot-token != null && env.quay-username != null }}
         run: |
           echo "${{ env.quay-robot-token }}" | crane auth login --password-stdin quay.io ${{ env.quay-username }}
+      - name: Login to ghcr.io
+        uses: docker/login-action@f4ef78c080cd8ba55a85445d5b36e214a81df20a # v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
       - name: get-digests
         id: get-digests
         env:
@@ -59,6 +65,9 @@ jobs:
       - name: Run Trivy vulnerability scanner
         if: ${{ steps.get-digests.outputs.destination != null }}
         uses: aquasecurity/trivy-action@e5f43133f6e8736992c9f3c1b3296e24b37e17f2 # 0.10.0
+        env:
+          TRIVY_USERNAME: ${{ github.actor }}
+          TRIVY_PASSWORD: ${{ secrets.GITHUB_TOKEN }}
         with:
           image-ref: '${{ fromJSON(toJSON(matrix)).target }}'
           format: 'sarif'
