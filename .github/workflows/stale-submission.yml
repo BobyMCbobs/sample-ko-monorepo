@@ -5,3 +5,6 @@ on:
 jobs:
   stale:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-stale-submission.yaml@main
+    with:
+      days-before-stale: 1
+      days-before-close: 2
