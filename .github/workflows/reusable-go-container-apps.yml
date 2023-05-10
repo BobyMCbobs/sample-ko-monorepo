@@ -79,6 +79,9 @@ jobs:
   gofmt:
     if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-gofmt.yml@main
+  govulncheck:
+    if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' }}
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-govulncheck.yml@main
   golangci-lint:
     if: ${{ github.event_name == 'workflow_call' || github.event_name == 'push' || github.event_name == 'pull_request' && github.ref == 'refs/heads/main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-golangci-lint.yml@main
