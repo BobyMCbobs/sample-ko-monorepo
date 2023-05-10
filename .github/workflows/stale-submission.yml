@@ -1,0 +1,7 @@
+name: stale
+on:
+  schedule:
+  - cron: '0 1 * * *'
+jobs:
+  stale:
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-stale-submission.yaml@main
