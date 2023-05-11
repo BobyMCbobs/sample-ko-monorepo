@@ -5,7 +5,7 @@ on:
   workflow_dispatch: {}
 jobs:
   stale:
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-stale-submission.yaml@main
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-stale-submission.yml@main
     with:
       days-before-stale: 1
       days-before-close: 2
