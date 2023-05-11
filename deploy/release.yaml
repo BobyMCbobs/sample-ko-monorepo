@@ -15,7 +15,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:cf682c40d8ee7bce64f38162aa5cc0f0bccd6ae47df126e9f5bb200b266243ef
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:0760ba45150e76632a427651dace069477dd735b4ff3ff232cde21fd0fb0012b
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -33,7 +33,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:f249ba3c18289e916e68d8f6181310da0085862f7e01851c53f65a76590f9713
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/mission-critical-service@sha256:6b6805e96740256840896b780b32015a63d5eacae05094a6a72df87cb20a8140
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
@@ -51,7 +51,7 @@ spec:
   template:
     spec:
       containers:
-        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/coolest-serverless-app@sha256:2ef33ab34d25a446138146c9db7061c9ba8119d1d7660c1bd6bd18ac8ffe8a84
+        - image: ghcr.io/bobymcbobs/sample-ko-monorepo/coolest-serverless-app@sha256:8835662592848ee6ad2a833d646ccd379a0de6a9c6d24df77c91310b98f43656
           securityContext:
             runAsUser: 1000
             runAsGroup: 1000
