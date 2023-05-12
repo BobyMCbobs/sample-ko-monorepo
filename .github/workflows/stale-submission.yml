@@ -3,6 +3,7 @@ on:
   schedule:
   - cron: '0 1 * * *'
   workflow_dispatch: {}
+  issue_comment: {}
 jobs:
   stale:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-stale-submission.yml@main
