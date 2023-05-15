@@ -35,6 +35,7 @@ jobs:
         uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version: stable
+      - uses: chainguard-dev/actions/setup-gitsign@46b982270e56b493847aae1a004218488e7e4e36 # main
       - id: run-info
         name: collect job run info
         run: |
