@@ -10,4 +10,4 @@ permissions:
   pull-requests: read
 jobs:
   conform:
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-policy-conformance.yml@main
+    uses: .github/workflows/reusable-policy-conformance.yml

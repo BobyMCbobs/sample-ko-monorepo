@@ -6,7 +6,7 @@ on:
   issue_comment: {}
 jobs:
   stale:
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-stale-submission.yml@main
+    uses: .github/workflows/reusable-stale-submission.yml
     with:
       days-before-stale: 1
       days-before-close: 2
