@@ -93,7 +93,7 @@ jobs:
     if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-gofmt.yml@main
   golangci-lint:
-    if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) && github.head_ref == 'main' }}
+    if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-golangci-lint.yml@main
   go-test:
     if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) }}
@@ -105,7 +105,7 @@ jobs:
     if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-govulncheck.yml@main
   image-promotion:
-    if: ${{ contains(fromJSON('["workflow_call", "push", "schedule"]'), github.event_name) && github.head_ref == 'main' }}
+    if: ${{ contains(fromJSON('["workflow_call", "push", "schedule"]'), github.event_name) && github.ref == 'refs/heads/main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-promotion.yml@main
     with:
       registryOverride: ${{ inputs.registryOverride }}
