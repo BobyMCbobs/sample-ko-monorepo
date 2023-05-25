@@ -190,7 +190,7 @@ jobs:
               # new file or image
               touch ${{ inputs.configPath }}
               yq e -P -i '.name = env(NAME) | .dmap[env(DIGEST)] = [env(RELEASE_VERSION)]' ${{ inputs.configPath }}
-            elif [ -f "${{ inputs.configPath }}" ] && [ ! "$(yq e '.[] | select(.name == env(NAME)) | .name' ${{ inputs.configPath }} 2>/dev/null || true)" = "$NAME" ]
+            elif [ -f "${{ inputs.configPath }}" ] && [ ! "$(yq e '.[] | select(.name == env(NAME)) | .name' ${{ inputs.configPath }} 2>/dev/null || true)" = "$NAME" ]; then
               # append new image
               echo "image '$IMAGE' not found. Appending a new index"
               yq e -P -i '. += {"name": env(NAME), "dmap": {env(DIGEST): [env(RELEASE_VERSION)]}}' ${{ inputs.configPath }}
