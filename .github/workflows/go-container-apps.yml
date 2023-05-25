@@ -13,6 +13,7 @@ permissions:
   actions: read
   packages: write
   contents: write
+  issues: write
   pull-requests: write
   id-token: write
   security-events: write
