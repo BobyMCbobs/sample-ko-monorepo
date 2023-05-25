@@ -90,6 +90,9 @@ jobs:
         include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
       - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
         with:
           go-version-file: go.mod
@@ -181,7 +184,16 @@ jobs:
               exit 1
             fi
             echo "Adding promotion for image '$IMAGE' with digest '$DIGEST' to tag '${RELEASE_VERSION}'"
-            yq e -P -i 'with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] = [env(RELEASE_VERSION)])' ${{ inputs.configPath }}
+            if [ ! -f "${{ inputs.configPath }}" ] \
+              || [ "$(cat ${{ inputs.configPath }})" = "[]" ] \
+              || ( [ -f "${{ inputs.configPath }}" ] && [ "$(yq e '.[] | select(.name == env(NAME)) | .name' ${{ inputs.configPath }} 2>/dev/null || true)" = "$NAME" ] ); then
+              # new file or image
+              touch ${{ inputs.configPath }}
+              yq e -P -i '.name = env(NAME) | .dmap[env(DIGEST)] = [env(RELEASE_VERSION)]' ${{ inputs.configPath }}
+            else
+              # append
+              yq e -P -i 'with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] = [env(RELEASE_VERSION)])' ${{ inputs.configPath }}
+            fi
 
             if [ ! "$(yq e -P '.[] | select(.name==env(NAME)) | .dmap[env(DIGEST)][0] == env(RELEASE_VERSION)' ${{ inputs.configPath }})" = "true" ]; then
               echo "failed to write value to ${{ inputs.configPath }}" >/dev/stderr
