@@ -212,7 +212,7 @@ jobs:
           TIMESTAMP="$(date +%Y-%m-%d-%H-%M)"
           NEW_BRANCH="add-new-image-promotions-from-release-$RELEASE_VERSION-${TIMESTAMP}"
           echo "new-branch=$NEW_BRANCH" >> $GITHUB_OUTPUT
-          git add ${{ inputs.modfile }}
+          git add ${{ inputs.configPath }}
           git branch "${NEW_BRANCH}"
           git checkout "${NEW_BRANCH}"
           git commit -s -m "Add new image promotions from release $RELEASE_VERSION"
