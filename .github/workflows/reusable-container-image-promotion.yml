@@ -201,7 +201,7 @@ jobs:
         id: ensure-label-exists
         if: ${{ steps.determine-changes.outputs.changes == 'true' }}
         run: |
-          if !gh label list --json name --jq '.[].name' | grep -q -E "^$LABEL_FOR_PROMOTION_CONFIG\$"; then
+          if ! gh label list --json name --jq '.[].name' | grep -q -E "^$LABEL_FOR_PROMOTION_CONFIG\$"; then
             gh label create "$LABEL"
           fi
       - name: determine if there is an existing PR
