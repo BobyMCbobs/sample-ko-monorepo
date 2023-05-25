@@ -168,9 +168,9 @@ jobs:
       - name: write to config
         env:
           RELEASE_VERSION: ${{ github.event.release.tag_name }}
+          IMAGE_REGEXP: "^(.*)/(.*)@(.*)$"
         run: |
           for IMAGE in $(echo ${{ inputs.imageRefs }} | tr ',' ' '); do
-            echo $IMAGE
             if [[ "$IMAGE" =~ $IMAGE_REGEXP ]]; then
               export REPO="${BASH_REMATCH[1]}"
               export NAME="${BASH_REMATCH[2]}"
@@ -181,6 +181,11 @@ jobs:
             fi
             echo "Adding promotion for image '$IMAGE' with digest '$DIGEST' to tag '${RELEASE_VERSION}'"
             yq e -P -i 'with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] = [env(RELEASE_VERSION)])' ${{ inputs.configPath }}
+
+            if [ ! "$(yq e -P '.[] | select(.name==env(NAME)) | .dmap[env(DIGEST)][0] == env(RELEASE_VERSION)' ${{ inputs.configPath }})" = "true" ]; then
+              echo "failed to write value to ${{ inputs.configPath }}" >/dev/stderr
+              exit 1
+            fi
           done
       - name: determine changes
         id: determine-changes
