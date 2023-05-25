@@ -71,6 +71,15 @@ on:
         required: false
         description: |
           specifies whether to enable container scanning for each image built
+      containerBuildEnabled:
+        type: boolean
+        default: ${{ github.ref == 'refs/heads/main' }}
+        required: false
+        description: |
+          specifies whether to enable container scanning for each image built
+    outputs:
+      images:
+        value: ${{ jobs.build.outputs.images }}
 jobs:
   go-build:
     if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) }}
@@ -78,7 +87,7 @@ jobs:
     with:
       paths: ${{ inputs.paths }}
   build:
-    if: ${{ contains(fromJSON('["workflow_call", "push", "release"]'), github.event_name) }}
+    if: ${{ contains(fromJSON('["workflow_call", "push", "release"]'), github.event_name) && inputs.containerBuildEnabled }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-ko-build.yml@main
     with:
       registryOverride: ${{ inputs.registryOverride }}
