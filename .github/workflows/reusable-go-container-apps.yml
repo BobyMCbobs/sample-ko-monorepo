@@ -104,6 +104,14 @@ jobs:
   govulncheck:
     if: ${{ contains(fromJSON('["workflow_call", "push", "pull_request"]'), github.event_name) }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-govulncheck.yml@main
+  image-promotion-in-config-on-release:
+    needs: build
+    if: ${{ contains(fromJSON('["workflow_call", "release"]'), github.event_name) && inputs.imagePromotionConfigLiteral == null }}
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-promotion.yml@main
+    with:
+      registryOverride: ${{ inputs.registryOverride }}
+      configPath: ${{ inputs.imagePromotionConfigPath }}
+      imageRefs: ${{ needs.build.outputs.images }}
   image-promotion:
     if: ${{ contains(fromJSON('["workflow_call", "push", "schedule"]'), github.event_name) && github.ref == 'refs/heads/main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-promotion.yml@main
