@@ -198,7 +198,7 @@ jobs:
             echo "changes=true" >> $GITHUB_OUTPUT
           fi
       - name: determine if there is an existing label
-        id: existing-pr
+        id: ensure-label-exists
         if: ${{ steps.determine-changes.outputs.changes == 'true' }}
         run: |
           if !gh label list --json name --jq '.[].name' | grep -q -E "^$LABEL_FOR_PROMOTION_CONFIG\$"; then
