@@ -73,7 +73,7 @@ on:
           specifies whether to enable container scanning for each image built
       containerBuildEnabled:
         type: boolean
-        default: ${{ github.ref == 'refs/heads/main' }}
+        default: ${{ github.ref == 'refs/heads/main' || contains(fromJSON('["workflow_call", "release"]'), github.event_name) }}
         required: false
         description: |
           specifies whether to enable container scanning for each image built
