@@ -16,6 +16,8 @@
       - v0.4.7
     sha256:b87e43f405f86a0b8deea91be58dac96d97d3f12e94d45aad463ff8621b7054e:
       - v0.4.11
+    sha256:88a1f6582f4dea5bb81fdc7e1f88531e3cffc2cf2225c2d82063a50ecd753dbc:
+      - v0.4.12
 - name: mission-critical-service
   dmap:
     sha256:a479f33cb7f5fe7d5149de44848bcbc38d5f107d7b47a962df7749259eef49eb:
@@ -33,6 +35,8 @@
       - v0.4.7
     sha256:e436f43ff927e936ae9fdbe7985d8b50545232063803a59cfdc52fe1dcb46139:
       - v0.4.11
+    sha256:ba55b09f6bd8c97d95d51caf5871505034a996a1bf7e71a87e5e7f1d0c1409dd:
+      - v0.4.12
 - name: webthingy
   dmap:
     sha256:efdb4ab576f4028e8319733890af8e7c49eed7f43bfe33e078052a1d0763ef89:
@@ -50,3 +54,5 @@
       - v0.4.7
     sha256:fadb8bfd566de9600838a5e9ce8ab35f01464ee547b61a6f783961a882ecb4d2:
       - v0.4.11
+    sha256:43f7a1c203a0c73a38bd6efa5ab772fa19c9bd073ea5d036b214f99850a02da7:
+      - v0.4.12
