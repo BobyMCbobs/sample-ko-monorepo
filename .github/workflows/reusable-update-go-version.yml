@@ -58,6 +58,8 @@ jobs:
           if [ "${EXISTING_PR}" = "Update Go version to ${{ steps.run-info.outputs.go-version }}" ]; then
             echo "exists=true" >> $GITHUB_OUTPUT
           fi
+      - uses: chainguard-dev/actions/setup-gitsign@main
+        if: ${{ steps.determine-changes.outputs.changes == 'true' && steps.existing-pr.outputs.exists != 'true' }}
       - name: create PR
         if: ${{ steps.determine-changes.outputs.changes == 'true' && steps.existing-pr.outputs.exists != 'true' }}
         id: create-pr
