@@ -1,3 +1,22 @@
+<!-- generate TOC using `go run sigs.k8s.io/mdtoc@latest --inplace README.md` -->
+<!-- toc -->
+- [sample-ko-monorepo](#sample-ko-monorepo)
+  - [Features](#features)
+  - [Automations](#automations)
+  - [Usage](#usage)
+    - [Install dependencies](#install-dependencies)
+    - [Set up](#set-up)
+  - [Install products](#install-products)
+  - [Locally run binaries](#locally-run-binaries)
+  - [Locally build](#locally-build)
+  - [Signatures and attestations](#signatures-and-attestations)
+  - [Verifying](#verifying)
+  - [Troubleshooting](#troubleshooting)
+    - [images fail to push](#images-fail-to-push)
+  - [TODOs](#todos)
+  - [Related](#related)
+<!-- /toc -->
+
 # sample-ko-monorepo
 
 > A sample Go app for demonstrating Ko with
