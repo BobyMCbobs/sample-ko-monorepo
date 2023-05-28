@@ -23,11 +23,13 @@ jobs:
           go run sigs.k8s.io/mdtoc@latest --inplace $READMEPATH
       - id: changes
         name: determine changes
+        env:
+          READMEPATH: ${{ inputs.readmePath }}
         run: |
-          if git diff --name-only --diff-filter=ACMRT | grep ${{ inputs.readmePath }}; then
+          if git diff --name-only --diff-filter=ACMRT | grep $READMEPATH; then
             echo "changes=true" >> $GITHUB_OUTPUT
           fi
-      - if: ${{ steps.changes.outputs.changes == true }}
+      - if: ${{ steps.changes.outputs.changes == 'true' }}
         env:
           READMEPATH: ${{ inputs.readmePath }}
         run: |
