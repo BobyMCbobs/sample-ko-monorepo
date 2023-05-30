@@ -190,15 +190,15 @@ jobs:
               echo "file not found. Creating a new $CONFIG_PATH file"
               # new file or image
               touch $CONFIG_PATH
-              yq e -P -i '.name = env(NAME) | .dmap[env(DIGEST)] = [env(RELEASE_VERSION)] | [.]' $CONFIG_PATH
+              yq e -P -i '.. style="double" | .name = env(NAME) | .dmap[env(DIGEST)] = [env(RELEASE_VERSION)] | [.]' $CONFIG_PATH
             elif [ -f "$CONFIG_PATH" ] && [ ! "$(yq e '.[] | select(.name == env(NAME)) | .name' $CONFIG_PATH 2>/dev/null || true)" = "$NAME" ]; then
               # append new image
               echo "image '$NAME' not found. Appending a new index"
-              yq e -P -i '. += {"name": env(NAME), "dmap": {env(DIGEST): [env(RELEASE_VERSION)]}}' $CONFIG_PATH
+              yq e -P -i '.. style="double" | . += {"name": env(NAME), "dmap": {env(DIGEST): [env(RELEASE_VERSION)]}}' $CONFIG_PATH
             else
               # append new version
               echo "appending new promotion to existing image"
-              yq e -P -i 'with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] += [env(RELEASE_VERSION)])' $CONFIG_PATH
+              yq e -P -i '.. style="double" | with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] += [env(RELEASE_VERSION)])' $CONFIG_PATH
             fi
 
             if [ ! "$(yq e -P '.[] | select(.name==env(NAME)) | .dmap[env(DIGEST)][0] == env(RELEASE_VERSION)' $CONFIG_PATH)" = "true" ]; then
