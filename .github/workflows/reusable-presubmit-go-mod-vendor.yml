@@ -1,0 +1,29 @@
+name: reusable presubmit go mod vendor
+on:
+  workflow_call: {}
+jobs:
+  presubmit-go-mod-vendor:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        with:
+          go-version-file: go.mod
+          cache-dependency-path: go.sum
+      - name: run go mod vendor
+        run: |
+          go mod vendor -v
+      - id: changes
+        name: determine changes
+        run: |
+          git add --all ./vendor
+          if ( git ls-files --other --directory --exclude-standard | grep 'vendor/' || git diff --name-only --diff-filter=ACMRT | grep 'vendor/' ); then
+            echo "changes=true" >> $GITHUB_OUTPUT
+          fi
+      - if: ${{ steps.changes.outputs.changes == 'true' }}
+        env:
+          READMEPATH: ${{ inputs.readmePath }}
+        run: |
+          echo "changes detected" >/dev/stderr
+          echo "Please run 'git add --all ./vendor/' to add all vendor changes and commit again."
+          exit 1
