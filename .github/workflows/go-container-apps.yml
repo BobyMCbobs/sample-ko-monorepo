@@ -5,7 +5,11 @@ on:
   pull_request: {}
   schedule:
     - cron: "0 0 * * *"
-  release: {}
+  release:
+    types:
+      - published
+      - created
+      - released
   workflow_dispatch: {}
 
 permissions:
