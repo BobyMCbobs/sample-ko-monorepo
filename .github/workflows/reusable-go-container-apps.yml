@@ -76,7 +76,13 @@ on:
         default: ${{ github.ref == 'refs/heads/main' || contains(fromJSON('["workflow_call", "release"]'), github.event_name) }}
         required: false
         description: |
-          specifies whether to enable container scanning for each image built
+          specifies whether to enable container builds. Defaults to on the main branch, workflow_call or release
+      releaseManagementEnabled:
+        type: boolean
+        default: true
+        required: false
+        description: |
+          specifies whether to enable automatic git release management
     outputs:
       images:
         value: ${{ jobs.build.outputs.images }}
@@ -132,3 +138,6 @@ jobs:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-update-go-version.yml@main
     with:
       autoMerge: ${{ inputs.updateGoVersionAutoMerge }}
+  release-please:
+    if: ${{ contains(fromJSON('["workflow_call", "push"]'), github.event_name) && github.ref == 'refs/heads/main' }}
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-release-please.yml@main
