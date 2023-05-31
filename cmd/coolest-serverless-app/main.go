@@ -10,6 +10,8 @@ import (
 	"os"
 	"time"
 
+	"github.com/NYTimes/gziphandler"
+
 	"github.com/BobyMCbobs/sample-ko-monorepo/pkg/common"
 )
 
@@ -114,7 +116,7 @@ func NewCoolestServerlessApp() *CoolestServerlessApp {
 	mux.HandleFunc("/api/weather", handlers.getWeather)
 	mux.HandleFunc("/{.*}", handlers.pageNotFound)
 
-	handler := common.Logging(mux)
+	handler := gziphandler.GzipHandler(common.Logging(mux))
 	return &CoolestServerlessApp{
 		server: &http.Server{
 			Addr:           ":8080",
