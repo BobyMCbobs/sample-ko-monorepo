@@ -1,3 +1,4 @@
+name: reusable release please
 on:
   workflow_call:
     inputs:
@@ -5,9 +6,12 @@ on:
         type: string
         default: go
     outputs:
-      releases_created: ${{ jobs.release-please.outputs.releases_created }}
-      tag: ${{ jobs.release-please.outputs.tag_name }}
-      upload_url: ${{ jobs.release-please.outputs.upload_url }}
+      releases_created:
+        value: ${{ jobs.release-please.outputs.releases_created }}
+      tag: value:
+        ${{ jobs.release-please.outputs.tag_name }}
+      upload_url:
+        value: ${{ jobs.release-please.outputs.upload_url }}
 jobs:
   release-please:
     runs-on: ubuntu-latest
