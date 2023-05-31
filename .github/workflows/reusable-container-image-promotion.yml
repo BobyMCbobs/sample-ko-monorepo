@@ -149,6 +149,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: mikefarah/yq@d2f1ae9db722ac6b0702dd7f8a08dd22722d8c2d # v4.33.3
       - name: configure system
         run: |
           git config user.name 'github-actions[bot]'
@@ -190,18 +191,18 @@ jobs:
               echo "file not found. Creating a new $CONFIG_PATH file"
               # new file or image
               touch $CONFIG_PATH
-              yq e -P -i '.. style="double" | .name = env(NAME) | .dmap[env(DIGEST)] = [env(RELEASE_VERSION)] | [.]' $CONFIG_PATH
+              yq e -i '.. style="double" | .name = env(NAME) | .dmap[env(DIGEST)] = [env(RELEASE_VERSION)] | [.]' $CONFIG_PATH
             elif [ -f "$CONFIG_PATH" ] && [ ! "$(yq e '.[] | select(.name == env(NAME)) | .name' $CONFIG_PATH 2>/dev/null || true)" = "$NAME" ]; then
               # append new image
               echo "image '$NAME' not found. Appending a new index"
-              yq e -P -i '.. style="double" | . += {"name": env(NAME), "dmap": {env(DIGEST): [env(RELEASE_VERSION)]}}' $CONFIG_PATH
+              yq e -i '.. style="double" | . += {"name": env(NAME), "dmap": {env(DIGEST): [env(RELEASE_VERSION)]}}' $CONFIG_PATH
             else
               # append new version
               echo "appending new promotion to existing image"
-              yq e -P -i '.. style="double" | with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] += [env(RELEASE_VERSION)])' $CONFIG_PATH
+              yq e -i '.. style="double" | with(.[] | select(.name==env(NAME)); .dmap[env(DIGEST)] += [env(RELEASE_VERSION)])' $CONFIG_PATH
             fi
 
-            if [ ! "$(yq e -P '.[] | select(.name==env(NAME)) | .dmap[env(DIGEST)][0] == env(RELEASE_VERSION)' $CONFIG_PATH)" = "true" ]; then
+            if [ ! "$(yq e '.[] | select(.name==env(NAME)) | .dmap[env(DIGEST)][0] == env(RELEASE_VERSION)' $CONFIG_PATH)" = "true" ]; then
               echo "failed to write value to $CONFIG_PATH" >/dev/stderr
               # exit 1
             fi
