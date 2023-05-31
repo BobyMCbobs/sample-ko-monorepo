@@ -16,6 +16,9 @@ jobs:
       - id: changes
         name: determine changes
         run: |
+          if [ ! -d ./vendor ]; then
+            exit 0
+          fi
           git add --all ./vendor
           if ( git ls-files --other --directory --exclude-standard | grep 'vendor/' || git diff --name-only --diff-filter=ACMRT | grep 'vendor/' ); then
             echo "changes=true" >> $GITHUB_OUTPUT
