@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"runtime/debug"
 	"time"
 
 	"github.com/BobyMCbobs/sample-ko-monorepo/pkg/common"
@@ -44,6 +45,15 @@ func NewWebThingy() *WebThingy {
 }
 
 func (w *WebThingy) Run() {
+	info, _ := debug.ReadBuildInfo()
+	var debugInfo string
+	for _, i := range info.Settings {
+		switch i.Key {
+		case "vcs.revision", "vcs.time", "vcs.modified":
+			debugInfo += i.Key + " " + i.Value + " "
+		}
+	}
+	log.Printf("%v", debugInfo)
 	log.Printf("Listening on HTTP port '%v'\n", w.server.Addr)
 	log.Fatal(w.server.ListenAndServe())
 }
