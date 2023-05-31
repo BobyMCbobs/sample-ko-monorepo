@@ -8,8 +8,8 @@ on:
     outputs:
       releases_created:
         value: ${{ jobs.release-please.outputs.releases_created }}
-      tag: value:
-        ${{ jobs.release-please.outputs.tag_name }}
+      tag:
+        value: ${{ jobs.release-please.outputs.tag_name }}
       upload_url:
         value: ${{ jobs.release-please.outputs.upload_url }}
 jobs:
