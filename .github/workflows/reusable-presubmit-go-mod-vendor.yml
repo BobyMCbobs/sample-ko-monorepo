@@ -19,8 +19,7 @@ jobs:
           if [ ! -d ./vendor ]; then
             exit 0
           fi
-          git add --all ./vendor
-          if ( git ls-files --other --directory --exclude-standard | grep 'vendor/' || git diff --name-only --diff-filter=ACMRT | grep 'vendor/' ); then
+          if ( git diff --name-only --diff-filter=ACMRT | grep 'vendor/' || ( git add --all vendor/ && git ls-files --other --directory --exclude-standard | grep 'vendor/' ) ); then
             echo "changes=true" >> $GITHUB_OUTPUT
           fi
       - if: ${{ steps.changes.outputs.changes == 'true' }}
