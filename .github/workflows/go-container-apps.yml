@@ -5,8 +5,7 @@ on:
   pull_request: {}
   schedule:
     - cron: "0 0 * * *"
-  release:
-    types: [published]
+  release: {}
   workflow_dispatch: {}
 
 permissions:
