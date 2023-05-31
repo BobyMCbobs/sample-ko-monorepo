@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.7.0](https://github.com/BobyMCbobs/sample-ko-monorepo/compare/v0.6.0...v0.7.0) (2023-05-31)
+
+
+### Features
+
+* update release types ([ee2fec1](https://github.com/BobyMCbobs/sample-ko-monorepo/commit/ee2fec1ca14e0d2044d99225ecf55c572555533e))
+
 ## [0.6.0](https://github.com/BobyMCbobs/sample-ko-monorepo/compare/v0.5.0...v0.6.0) (2023-05-31)
 
 
