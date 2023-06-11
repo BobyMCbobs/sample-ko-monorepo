@@ -24,7 +24,7 @@ jobs:
   update-go-version:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: configure system
         run: |
           git config user.name 'github-actions[bot]'
@@ -32,10 +32,10 @@ jobs:
           gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
           gh auth status
       - id: setup-go
-        uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+        uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
         with:
           go-version: stable
-      - uses: chainguard-dev/actions/setup-gitsign@46b982270e56b493847aae1a004218488e7e4e36 # main
+      - uses: chainguard-dev/actions/setup-gitsign@698f3ff7c4a8be5d91c8ece9a5859e29cfe58803 # main
       - id: run-info
         name: collect job run info
         run: |
@@ -58,7 +58,7 @@ jobs:
           if [ "${EXISTING_PR}" = "Update Go version to ${{ steps.run-info.outputs.go-version }}" ]; then
             echo "exists=true" >> $GITHUB_OUTPUT
           fi
-      - uses: chainguard-dev/actions/setup-gitsign@main
+      - uses: chainguard-dev/actions/setup-gitsign@698f3ff7c4a8be5d91c8ece9a5859e29cfe58803 # main
         if: ${{ steps.determine-changes.outputs.changes == 'true' && steps.existing-pr.outputs.exists != 'true' }}
       - name: create PR
         if: ${{ steps.determine-changes.outputs.changes == 'true' && steps.existing-pr.outputs.exists != 'true' }}

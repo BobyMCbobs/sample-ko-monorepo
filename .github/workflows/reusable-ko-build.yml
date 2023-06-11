@@ -34,15 +34,15 @@ jobs:
     outputs:
       images: ${{ steps.build.outputs.images }}
     steps:
-      - uses: actions/checkout@8e5e7e5ab8b370d6c329ec480221332ada57f0ab # v3.5.2
+      - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: configure system
         run: |
           git config user.name 'github-actions[bot]'
           git config user.email 'github-actions[bot]@users.noreply.github.com'
           gh auth login --with-token < <(echo ${{ secrets.GITHUB_TOKEN }})
           gh auth status
-      - uses: sigstore/cosign-installer@204a51a57a74d190b284a0ce69b44bc37201f343 # v3.0.3
-      - uses: chainguard-dev/actions/setup-gitsign@46b982270e56b493847aae1a004218488e7e4e36 # main
+      - uses: sigstore/cosign-installer@dd6b2e2b610a11fd73dd187a43d57cc1394e35f9 # v3.0.5
+      - uses: chainguard-dev/actions/setup-gitsign@698f3ff7c4a8be5d91c8ece9a5859e29cfe58803 # main
       - id: run-info
         name: collect job run info
         env:
@@ -58,7 +58,7 @@ jobs:
             PATHS="$(grep -r 'package main' | sort | cut -d ':' -f1 | grep '.go$' | xargs -n 1 dirname | sort | uniq | grep -v vendor | xargs -i echo './{}' | xargs)"
             echo "paths="$PATHS"" >> $GITHUB_OUTPUT
           fi
-      - uses: actions/setup-go@4d34df0c2316fe8122ab82dc22947d607c0c91f9 # v4.0.0
+      - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
         with:
           go-version-file: go.mod
           cache-dependency-path: go.sum
@@ -96,7 +96,7 @@ jobs:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         run: |
           gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml --clobber
-      - uses: chainguard-dev/actions/setup-gitsign@main
+      - uses: chainguard-dev/actions/setup-gitsign@698f3ff7c4a8be5d91c8ece9a5859e29cfe58803 # main
         if: github.event_name == 'release' && inputs.configPath
       - name: commit and push if there are changes
         if: github.event_name == 'release' && inputs.configPath
