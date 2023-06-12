@@ -1,10 +1,13 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	"log"
 	"net/http"
-	"runtime/debug"
+	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/BobyMCbobs/sample-ko-monorepo/pkg/common"
@@ -35,27 +38,33 @@ func NewWebThingy() *WebThingy {
 	handler := common.Logging(mux)
 	return &WebThingy{
 		server: &http.Server{
-			Addr:           ":8080",
-			Handler:        handler,
-			ReadTimeout:    10 * time.Second,
-			WriteTimeout:   10 * time.Second,
-			MaxHeaderBytes: 1 << 20,
+			Addr:              ":8080",
+			Handler:           handler,
+			ReadTimeout:       10 * time.Second,
+			WriteTimeout:      10 * time.Second,
+			ReadHeaderTimeout: 2 * time.Second,
+			MaxHeaderBytes:    1 << 20,
 		},
 	}
 }
 
 func (w *WebThingy) Run() {
-	info, _ := debug.ReadBuildInfo()
-	var debugInfo string
-	for _, i := range info.Settings {
-		switch i.Key {
-		case "vcs.revision", "vcs.time", "vcs.modified":
-			debugInfo += i.Key + " " + i.Value + " "
-		}
-	}
-	log.Printf("%v", debugInfo)
 	log.Printf("Listening on HTTP port '%v'\n", w.server.Addr)
 	log.Fatal(w.server.ListenAndServe())
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+	go func() {
+		if err := w.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
+	}()
+
+	<-done
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := w.server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server didn't exit gracefully %v", err)
+	}
 }
 
 func main() {
