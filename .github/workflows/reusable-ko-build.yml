@@ -24,6 +24,12 @@ on:
         description: |
           the path to resolvable YAML files.
           see: https://ko.build/features/k8s/#ko-resolve
+      github-token:
+        required: false
+        default: ${{ secrets.GITHUB_TOKEN }}
+        type: string
+        description: |
+          a GitHub token to login to the container registry with
     outputs:
       images:
         value: ${{ jobs.build.outputs.images }}
@@ -64,6 +70,9 @@ jobs:
           cache-dependency-path: go.sum
           check-latest: true
       - uses: ko-build/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.6
+      - name: ko login ghcr.io
+        run: |
+          echo "${{ inputs.github-token }}" | ko login --password-stdin --username ${{ github.actor }} ghcr.io
       - id: build
         env:
           KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
