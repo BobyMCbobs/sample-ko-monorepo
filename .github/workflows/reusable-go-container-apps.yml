@@ -138,9 +138,6 @@ jobs:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-update-go-version.yml@main
     with:
       autoMerge: ${{ inputs.updateGoVersionAutoMerge }}
-  presubmit-go-mod-vendor:
-    if: ${{ contains(fromJSON('["workflow_call", "pull_request"]'), github.event_name) }}
-    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-presubmit-go-mod-vendor.yml@main
   release-please:
     if: ${{ contains(fromJSON('["workflow_call", "push"]'), github.event_name) && github.ref == 'refs/heads/main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-release-please.yml@main
