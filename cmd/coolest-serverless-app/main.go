@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -8,6 +9,8 @@ import (
 	"net/http"
 	"net/url"
 	"os"
+	"os/signal"
+	"syscall"
 	"time"
 
 	"github.com/BobyMCbobs/sample-ko-monorepo/pkg/common"
@@ -117,11 +120,12 @@ func NewCoolestServerlessApp() *CoolestServerlessApp {
 	handler := common.Logging(mux)
 	return &CoolestServerlessApp{
 		server: &http.Server{
-			Addr:           ":8080",
-			Handler:        handler,
-			ReadTimeout:    10 * time.Second,
-			WriteTimeout:   10 * time.Second,
-			MaxHeaderBytes: 1 << 20,
+			Addr:              ":8080",
+			Handler:           handler,
+			ReadTimeout:       10 * time.Second,
+			ReadHeaderTimeout: 2 * time.Second,
+			WriteTimeout:      10 * time.Second,
+			MaxHeaderBytes:    1 << 20,
 		},
 		weatherMetrics: weatherMetrics,
 		latitude:       GetLatitude(),
@@ -131,7 +135,21 @@ func NewCoolestServerlessApp() *CoolestServerlessApp {
 
 func (c *CoolestServerlessApp) Run() {
 	log.Printf("Listening on HTTP port '%v'\n", c.server.Addr)
-	log.Fatal(c.server.ListenAndServe())
+	done := make(chan os.Signal, 1)
+	signal.Notify(done, os.Interrupt, syscall.SIGINT, syscall.SIGTERM)
+
+	go func() {
+		if err := c.server.ListenAndServe(); err != nil && err != http.ErrServerClosed {
+			log.Fatal(err)
+		}
+	}()
+
+	<-done
+	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
+	defer cancel()
+	if err := c.server.Shutdown(ctx); err != nil {
+		log.Fatalf("Server didn't exit gracefully %v", err)
+	}
 }
 
 func (c *CoolestServerlessApp) updateWeatherMetrics() error {
