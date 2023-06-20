@@ -1,0 +1,10 @@
+name: presubmit GitHub Actions workflow validator
+on:
+  pull_request: {}
+  push:
+    branches:
+      - main
+  workflow_dispatch: {}
+jobs:
+  presubmit-github-actions-workflow-validator:
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-github-actions-workflow-validator.yml@main
