@@ -1,6 +1,6 @@
 ---
 gitHubLogin: "github-actions[bot]"
-gitHubToken: "/github/workflow/gh-token"
+gitHubToken: "/github/workspace/.gh-token"
 gitName: "github-actions[bot]"
 gitEmail: "github-actions[bot]@users.noreply.github.com"
 onCallAddress: "https://storage.googleapis.com/kubernetes-jenkins/oncall.json"
