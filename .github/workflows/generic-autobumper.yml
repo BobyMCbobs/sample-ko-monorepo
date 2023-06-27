@@ -14,7 +14,6 @@ jobs:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - name: write token
         run: |
-          mkdir -p /etc/github-token
           echo ${{ github.token }} > /github/workflow/gh-token
       - name: generic-autobumper
         uses: docker://gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
@@ -23,4 +22,4 @@ jobs:
       - name: delete token
         if: always()
         run: |
-          rm /github/workflow/gh-token
+          rm -f /github/workflow/gh-token
