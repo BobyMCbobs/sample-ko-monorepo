@@ -12,6 +12,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
-      - uses: docker://gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
+      - name: write token
+        run: |
+          mkdir -p /etc/github-token
+          echo ${{ github.token }} > /etc/github-token/token
+      - name: generic-autobumper
+        uses: docker://gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
         with:
-          args: --config=/github/workspace/.github/workflows/generic-autobumper.yml
+          args: --config=/github/workspace/.github/generic-autobumper-config.yml
