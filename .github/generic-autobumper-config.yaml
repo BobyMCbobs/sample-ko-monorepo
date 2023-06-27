@@ -1,5 +1,5 @@
 ---
-gitHubLogin: "github-actions[bot]"
+gitHubLogin: "BobyMCbobs"
 gitHubToken: "/github/workspace/.gh-token"
 gitName: "github-actions[bot]"
 gitEmail: "github-actions[bot]@users.noreply.github.com"
