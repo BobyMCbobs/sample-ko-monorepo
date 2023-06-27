@@ -1,0 +1,21 @@
+---
+gitHubLogin: "github-actions[bot]"
+# gitHubToken: "/etc/github-token/token"
+gitName: "github-actions[bot]"
+gitEmail: "github-actions[bot]@users.noreply.github.com"
+onCallAddress: "https://storage.googleapis.com/kubernetes-jenkins/oncall.json"
+skipPullRequest: false
+gitHubOrg: "BobyMCbobs"
+gitHubRepo: "sample-ko-monorepo"
+remoteName: "sample-ko-monorepo"
+headBranchName: "prowjobs-autobump"
+upstreamURLBase: "https://raw.githubusercontent.com/BobyMCbobs/sample-ko/monorepo/main"
+includedConfigPaths:
+  - "deploy"
+targetVersion: "latest"
+prefixes:
+  - name: "sample-ko-monorepo images"
+    prefix: "ghcr.io/bobymcbobs/sample-ko-monorepo/"
+    repo: "https://github.com/BobyMCbobs/sample-ko-monorepo"
+    summarise: false
+    consistentImages: false
