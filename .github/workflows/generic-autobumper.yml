@@ -18,7 +18,7 @@ jobs:
       - name: generic-autobumper
         uses: docker://gcr.io/k8s-prow/generic-autobumper:v20230623-ea9b5f8eba
         with:
-          args: --config=/github/workspace/.github/generic-autobumper-config.yml
+          args: --config=/github/workspace/.github/generic-autobumper-config.yaml
       - name: delete token
         if: always()
         run: |
