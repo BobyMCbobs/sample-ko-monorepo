@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.9.0](https://github.com/BobyMCbobs/sample-ko-monorepo/compare/v0.8.1...v0.9.0) (2023-06-28)
+
+
+### Features
+
+* add goimports ([6b9a03d](https://github.com/BobyMCbobs/sample-ko-monorepo/commit/6b9a03d5ee42c7cbe75c9055e453d8507c96cac2))
+
 ## [0.8.0](https://github.com/BobyMCbobs/sample-ko-monorepo/compare/v0.7.0...v0.8.0) (2023-06-27)
 
 
