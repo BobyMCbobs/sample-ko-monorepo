@@ -29,3 +29,4 @@ jobs:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-container-apps.yml@main
     with:
       updateGoVersionAutoMerge: true
+      push: false
