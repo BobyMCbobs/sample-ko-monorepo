@@ -79,6 +79,7 @@ jobs:
           IMAGES="$(ko build --push=$PUSH --base-import-paths $IMAGES_PATH)"
           echo "images=$(echo $IMAGES | tr ' ' ',')" >> $GITHUB_OUTPUT
       - id: sign-images-and-attest-sbom
+        if: ${{ inputs.push == true }}
         env:
           COSIGN_YES: "true"
           IMAGE: ${{ steps.build.outputs.images }}
@@ -89,25 +90,26 @@ jobs:
             cosign attest --predicate /tmp/sbom-spdx.json $IMAGE -y --recursive
           done
       - name: image result
+        if: ${{ inputs.push == true }}
         id: result
         run: |
           echo "Build, pushed and signed: $(echo ${{ steps.build.outputs.images }} | tr ',' ' ')"
       - id: build-release
-        if: github.event_name == 'release' && inputs.configPath
+        if: ${{ github.event_name == 'release' && inputs.configPath && inputs.push == true }}
         env:
           KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
         run: |
           ko resolve --base-import-paths -f config/ > ./deploy/release.yaml
       - id: release
-        if: github.event_name == 'release' && inputs.configPath
+        if: ${{ github.event_name == 'release' && inputs.configPath && inputs.push }}
         env:
           GITHUB_TOKEN: ${{ github.TOKEN }}
         run: |
           gh release upload ${{ github.event.release.tag_name }} ./deploy/release.yaml --clobber
       - uses: chainguard-dev/actions/setup-gitsign@698f3ff7c4a8be5d91c8ece9a5859e29cfe58803 # main
-        if: github.event_name == 'release' && inputs.configPath
+        if: ${{ github.event_name == 'release' && inputs.configPath && inputs.push == true }}
       - name: commit and push if there are changes
-        if: github.event_name == 'release' && inputs.configPath
+        if: ${{ github.event_name == 'release' && inputs.configPath && inputs.push == true }}
         run: |
           if { git ls-files --others --exclude-standard ; git diff-index --name-only --diff-filter=d HEAD ; } | grep deploy/release.yaml; then
               echo changes detected
