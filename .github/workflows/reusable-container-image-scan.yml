@@ -21,7 +21,7 @@ jobs:
       - uses: mikefarah/yq@5ef537f3fd1a9437aa3ee44c32c6459a126efdc4 # v4.34.1
       - id: set
         run: |
-          echo "matrix=$(echo ${{ inputs.imageRefs }} | tr ',' ' ' | yq 'split(" ")|.[]|{"target":.}' -ojson | jq -rcM -s .)" >> $GITHUB_OUTPUT
+          echo "matrix=$(echo ${{ inputs.imageRefs }} | tr ',' ' ' | yq 'split(" ")|.[]|{"target":.}' -ojson | jq -rcM -s '{"include":.}')" >> $GITHUB_OUTPUT
       - name: check output
         run: |
           jq . <<< '${{ steps.set.outputs.matrix }}'
@@ -29,8 +29,7 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
       - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
