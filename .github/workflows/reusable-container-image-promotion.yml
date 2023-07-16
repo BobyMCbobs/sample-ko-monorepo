@@ -73,9 +73,9 @@ jobs:
       - id: set
         run: |
           if [ -n "${{ inputs.configLiteral }}" ]; then
-            echo "matrix=$(jq -rcMs <<< "$(yq e --expression "$TRANSFORM_EXPRESSION" -P -o json <<< $(echo -e '${{ inputs.configLiteral }}'))")" >> $GITHUB_OUTPUT
+            echo "matrix=$(jq -rcMs '{"include":.}' <<< "$(yq e --expression "$TRANSFORM_EXPRESSION" -P -o json <<< $(echo -e '${{ inputs.configLiteral }}'))")" >> $GITHUB_OUTPUT
           else
-            echo "matrix=$(jq -rcMs <<< "$(yq e --expression "$TRANSFORM_EXPRESSION" -P ${{ inputs.configPath }} -o json)")" >> $GITHUB_OUTPUT
+            echo "matrix=$(jq -rcMs '{"include":.}' <<< "$(yq e --expression "$TRANSFORM_EXPRESSION" -P ${{ inputs.configPath }} -o json)")" >> $GITHUB_OUTPUT
           fi
       - name: check output
         run: |
@@ -85,8 +85,7 @@ jobs:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
-      matrix:
-        include: ${{ fromJSON(needs.prepare.outputs.matrix) }}
+      matrix: ${{ fromJSON(needs.prepare.outputs.matrix) }}
     steps:
       - uses: actions/checkout@c85c95e3d7251135ab7dc9ce3241c5835cc595a9 # v3.5.3
         with:
@@ -123,6 +122,7 @@ jobs:
           echo "container-registry=${REGISTRY,,}" >> $GITHUB_OUTPUT
           echo "source=${SOURCE}" >> $GITHUB_OUTPUT
           echo "destination=${DESTINATION}" >> $GITHUB_OUTPUT
+          echo "tag=${{ fromJSON(toJSON(matrix)).tag }}" >> $GITHUB_OUTPUT
       - name: get-digests
         id: get-digests
         env:
@@ -142,8 +142,10 @@ jobs:
         env:
           SOURCE: ${{ steps.run-info.outputs.source }}
           DESTINATION: ${{ steps.run-info.outputs.destination }}
+          TAG: ${{ steps.run-info.outputs.tag }}
         run: |
           crane cp $SOURCE $DESTINATION
+          cosign sign -y --recursive --annotations "tag=$TAG" "$DESTINATION"
   promote-in-config-on-release:
     if: ${{ contains(fromJSON('["workflow_call", "release"]'), github.event_name) && inputs.configLiteral == null && inputs.configPath != null }}
     runs-on: ubuntu-latest
