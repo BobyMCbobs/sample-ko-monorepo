@@ -11,3 +11,5 @@ permissions:
 jobs:
   conform:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-policy-conformance.yml@main
+    secrets:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
