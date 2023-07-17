@@ -17,8 +17,12 @@ jobs:
           fi
           echo "ref=$REF" >> $GITHUB_OUTPUT
       - name: conform
-        uses: docker://ghcr.io/siderolabs/conform:v0.1.0-alpha.27
-        with:
-          args: enforce --commit-ref=${{ steps.ref.outputs.ref }} --reporter=github
+        run: |
+          docker run \
+            -e INPUT_TOKEN \
+            -v "$PWD:$PWD" \
+            ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27 \
+            enforce --commit-ref="$REF" --reporter=github
         env:
           INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REF: ${{ steps.ref.outputs.ref }}
