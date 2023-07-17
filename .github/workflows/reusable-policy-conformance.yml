@@ -28,6 +28,6 @@ jobs:
             -v "/home/runner/work/_temp/_github_home":"/github/home" \
             -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" \
             -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" \
-            --workdir /github/workflow \
+            --workdir "$PWD" \
             ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27 \
             enforce --commit-ref="$REF" --reporter=github
