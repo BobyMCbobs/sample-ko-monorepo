@@ -17,12 +17,16 @@ jobs:
           fi
           echo "ref=$REF" >> $GITHUB_OUTPUT
       - name: conform
-        run: |
-          docker run \
-            -e INPUT_TOKEN \
-            -v "$PWD:$PWD" \
-            ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27 \
-            enforce --commit-ref="$REF" --reporter=github
         env:
           INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           REF: ${{ steps.ref.outputs.ref }}
+        run: |
+          docker run \
+            -e INPUT_TOKEN \
+            -e GITHUB_EVENT_PATH \
+            -v "$PWD:$PWD" \
+            -v "/home/runner/work/_temp/_github_home":"/github/home" \
+            -v "/home/runner/work/_temp/_github_workflow":"/github/workflow" \
+            -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" \
+            ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27 \
+            enforce --commit-ref="$REF" --reporter=github
