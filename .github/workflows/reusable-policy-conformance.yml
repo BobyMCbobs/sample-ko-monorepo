@@ -1,9 +1,6 @@
 name: reusable policy conformance
 on:
-  workflow_call:
-    secrets:
-      GITHUB_TOKEN:
-        required: true
+  workflow_call: {}
 jobs:
   conform:
     runs-on: ubuntu-latest
@@ -21,7 +18,7 @@ jobs:
           echo "ref=$REF" >> $GITHUB_OUTPUT
       - name: conform
         env:
-          INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TOKEN: ${{ github.token }}
           REF: ${{ steps.ref.outputs.ref }}
         run: |
           docker run \
