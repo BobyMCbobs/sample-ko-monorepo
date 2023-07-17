@@ -68,5 +68,6 @@ func (w *WebThingy) Run() {
 }
 
 func main() {
+	log.Println("Launching webthingy!!!")
 	NewWebThingy().Run()
 }
