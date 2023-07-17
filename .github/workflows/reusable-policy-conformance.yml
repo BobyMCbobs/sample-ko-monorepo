@@ -18,7 +18,7 @@ jobs:
           echo "ref=$REF" >> $GITHUB_OUTPUT
       - name: conform
         env:
-          INPUT_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          INPUT_TOKEN: ${{ github.token }}
           REF: ${{ steps.ref.outputs.ref }}
         run: |
           docker run \
