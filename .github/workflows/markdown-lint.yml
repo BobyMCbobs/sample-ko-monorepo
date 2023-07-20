@@ -4,4 +4,4 @@ on:
   workflow_dispatch: {}
 jobs:
   lint-markdown:
-    uses: GeoNet/Actions/.github/workflows/reusable-markdown-lint.yml@main
+    uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-markdown-lint.yml@main
