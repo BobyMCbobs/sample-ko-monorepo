@@ -9,17 +9,9 @@ jobs:
         with:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
-      - id: ref
-        run: |
-          REF='${{ github.ref }}'
-          if [ -n '${{ github.head_ref }}' ]; then
-            REF='refs/heads/${{ github.head_ref }}'
-          fi
-          echo "ref=$REF" >> $GITHUB_OUTPUT
       - name: conform
         env:
           INPUT_TOKEN: ${{ github.token }}
-          REF: ${{ steps.ref.outputs.ref }}
         run: |
           docker run \
             -e "ACTIONS_CACHE_URL" \
@@ -80,4 +72,4 @@ jobs:
             -v "/home/runner/work/_temp/_runner_file_commands":"/github/file_commands" \
             --workdir /github/workspace \
             ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27 \
-            enforce --commit-ref="$REF" --reporter=github
+            enforce --commit-ref="refs/remotes/origin/main" --reporter=github
