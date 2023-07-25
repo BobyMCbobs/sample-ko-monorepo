@@ -10,7 +10,7 @@ jobs:
           fetch-depth: 0
           ref: ${{ github.head_ref }}
       - name: conform
-        run: docker://ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27
+        uses: docker://ghcr.io/geonet/base-images/siderolabs-conform:v0.1.0-alpha.27
         with:
           args: enforce --commit-ref=refs/remotes/origin/main --reporter=github
         env:
