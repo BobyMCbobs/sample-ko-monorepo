@@ -110,9 +110,10 @@ jobs:
         name: collect job run info
         env:
           GHCR_DOCKER_REPO: ghcr.io/${{ github.repository }}
+          REGISTRY_OVERRIDE: ${{ inputs.registryOverride }}
         run: |
-          if [ -n "${{ inputs.registryOverride }}" ]; then
-            REGISTRY="${REGISTRY,,}"
+          if [ -n "$REGISTRY_OVERRIDE" ]; then
+            REGISTRY="$REGISTRY_OVERRIDE"
           else
             REGISTRY="${GHCR_DOCKER_REPO,,}"
           fi
@@ -142,10 +143,8 @@ jobs:
         env:
           SOURCE: ${{ steps.run-info.outputs.source }}
           DESTINATION: ${{ steps.run-info.outputs.destination }}
-          TAG: ${{ steps.run-info.outputs.tag }}
         run: |
           crane cp $SOURCE $DESTINATION
-          cosign sign -y --recursive --annotations "tag=$TAG" "$DESTINATION"
   promote-in-config-on-release:
     if: ${{ contains(fromJSON('["workflow_call", "release"]'), github.event_name) && inputs.configLiteral == null && inputs.configPath != null }}
     runs-on: ubuntu-latest
