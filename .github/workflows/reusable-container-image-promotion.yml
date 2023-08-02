@@ -1,6 +1,6 @@
 name: reusable container image promotion
 env:
-  VERSION_CRANE: v0.15.2
+  VERSION_CRANE: v0.16.1
 on:
   workflow_call:
     inputs:

@@ -12,7 +12,7 @@ on:
             - ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:7ec264f3bd6344ae7525e88a69a4e7f6e6b3eaf11549fb889e31a2861df27923
             - alpine:3.17
 env:
-  VERSION_CRANE: v0.15.3
+  VERSION_CRANE: v0.16.1
 jobs:
   prepare:
     runs-on: ubuntu-latest
