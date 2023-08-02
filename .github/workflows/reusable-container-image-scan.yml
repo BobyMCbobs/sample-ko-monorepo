@@ -11,6 +11,8 @@ on:
             - docker.io/library/nginx:stable
             - ghcr.io/bobymcbobs/sample-ko-monorepo/webthingy@sha256:7ec264f3bd6344ae7525e88a69a4e7f6e6b3eaf11549fb889e31a2861df27923
             - alpine:3.17
+env:
+  VERSION_CRANE: v0.15.3
 jobs:
   prepare:
     runs-on: ubuntu-latest
@@ -38,6 +40,8 @@ jobs:
           cache-dependency-path: go.sum
           check-latest: true
       - uses: imjasonh/setup-crane@00c9e93efa4e1138c9a7a5c594acd6c75a2fbf0c # v0.3
+        with:
+          version: ${{ env.VERSION_CRANE }}
       - name: quay crane login
         env:
           quay-robot-token: ${{ secrets.QUAY_ROBOT_TOKEN }}
