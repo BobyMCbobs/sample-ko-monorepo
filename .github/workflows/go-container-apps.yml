@@ -27,5 +27,6 @@ permissions:
 jobs:
   go-container-apps:
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-go-container-apps.yml@main
+    secrets: inherit
     with:
       updateGoVersionAutoMerge: true
