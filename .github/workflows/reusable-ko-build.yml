@@ -11,6 +11,11 @@ on:
             - quay.io
             - registry.gitlab.com/somecoolproject
             - ghcr.io/somecoolproject/thing
+      registryGhcrUsernameOverride:
+        required: false
+        type: string
+        description: |
+          the GitHub username to use for ghcr auth override.
       paths:
         required: false
         type: string
@@ -31,9 +36,7 @@ on:
         description: |
           set to true to push an image to a registry. When set to false, it will build and exit
     secrets:
-      registryGhcrUsernameOverride:
-        required: false
-      registryGhcrPasswordOverride:
+      GHCR_PASSWORD:
         required: false
     outputs:
       images:
@@ -78,7 +81,7 @@ jobs:
       - uses: imjasonh/setup-crane@00c9e93efa4e1138c9a7a5c594acd6c75a2fbf0c # v0.3
       - name: override login to ghcr
         env:
-          registryGhcrUsernameOverride: ${{ secrets.GHCR_USERNAME }}
+          registryGhcrUsernameOverride: ${{ inputs.registryGhcrUsernameOverride }}
           registryGhcrPasswordOverride: ${{ secrets.GHCR_PASSWORD }}
         if: ${{ inputs.push == true && env.registryGhcrUsernameOverride != '' && env.registryGhcrPasswordOverride != '' }}
         run: |

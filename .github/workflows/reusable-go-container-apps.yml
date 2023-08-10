@@ -11,6 +11,11 @@ on:
             - quay.io
             - registry.gitlab.com/somecoolproject
             - ghcr.io/somecoolproject/thing
+      registryGhcrUsernameOverride:
+        required: false
+        type: string
+        description: |
+          a container registry to use instead of ghcr.io.
       paths:
         required: false
         type: string
@@ -90,8 +95,6 @@ on:
         description: |
           set to true to push an image to a registry. When set to false, it will build and exit
     secrets:
-      GHCR_USERNAME:
-        required: false
       GHCR_PASSWORD:
         required: false
     outputs:
@@ -109,6 +112,7 @@ jobs:
     secrets: inherit
     with:
       registryOverride: ${{ inputs.registryOverride }}
+      registryGhcrUsernameOverride: ${{ inputs.registryGhcrUsernameOverride }}
       paths: ${{ inputs.paths }}
       push: ${{ inputs.push }}
   scan:
@@ -139,14 +143,18 @@ jobs:
     needs: build
     if: ${{ contains(fromJSON('["workflow_call", "release"]'), github.event_name) && inputs.imagePromotionConfigLiteral == null }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-promotion.yml@main
+    secrets: inherit
     with:
+      registryGhcrUsernameOverride: ${{ inputs.registryGhcrUsernameOverride }}
       configPath: ${{ inputs.imagePromotionConfigPath }}
       imageRefs: ${{ needs.build.outputs.images }}
   image-promotion:
     if: ${{ contains(fromJSON('["workflow_call", "push", "schedule"]'), github.event_name) && github.ref == 'refs/heads/main' }}
     uses: BobyMCbobs/sample-ko-monorepo/.github/workflows/reusable-container-image-promotion.yml@main
+    secrets: inherit
     with:
       registryOverride: ${{ inputs.registryOverride }}
+      registryGhcrUsernameOverride: ${{ inputs.registryGhcrUsernameOverride }}
       configPath: ${{ inputs.imagePromotionConfigPath }}
       configLiteral: ${{ inputs.imagePromotionConfigLiteral }}
   update-go-version:
