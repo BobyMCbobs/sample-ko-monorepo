@@ -77,8 +77,8 @@ jobs:
       - uses: ko-build/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.6
       - name: override login to ghcr
         env:
-          registryGhcrUsernameOverride: ${{ secrets.registryGhcrUsernameOverride }}
-          registryGhcrPasswordOverride: ${{ secrets.registryGhcrPasswordOverride }}
+          registryGhcrUsernameOverride: ${{ secrets.GHCR_USERNAME }}
+          registryGhcrPasswordOverride: ${{ secrets.GHCR_PASSWORD }}
         if: ${{ inputs.push == true && env.registryGhcrUsernameOverride != '' && env.registryGhcrPasswordOverride != '' }}
         run: |
           echo "${{ env.registryGhcrPasswordOverride }}" | crane auth login ghcr.io -u ${{ env.registryGhcrUsernameOverride }} --password-stdin
