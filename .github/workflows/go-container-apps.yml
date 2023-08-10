@@ -30,4 +30,3 @@ jobs:
     secrets: inherit
     with:
       updateGoVersionAutoMerge: true
-      registryGhcrUsernameOverride: BobyMCbobs
