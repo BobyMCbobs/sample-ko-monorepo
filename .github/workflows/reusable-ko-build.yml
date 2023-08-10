@@ -30,6 +30,11 @@ on:
         type: boolean
         description: |
           set to true to push an image to a registry. When set to false, it will build and exit
+    secrets:
+      registryGhcrUsernameOverride:
+        required: false
+      registryGhcrPasswordOverride:
+        required: false
     outputs:
       images:
         value: ${{ jobs.build.outputs.images }}
@@ -70,6 +75,13 @@ jobs:
           cache-dependency-path: go.sum
           check-latest: true
       - uses: ko-build/setup-ko@ace48d793556083a76f1e3e6068850c1f4a369aa # v0.6
+      - name: override login to ghcr
+        env:
+          registryGhcrUsernameOverride: ${{ secrets.registryGhcrUsernameOverride }}
+          registryGhcrPasswordOverride: ${{ secrets.registryGhcrPasswordOverride }}
+        if: ${{ inputs.push == true && env.registryGhcrUsernameOverride != '' && env.registryGhcrPasswordOverride != '' }}
+        run: |
+          echo "${{ env.registryGhcrPasswordOverride }}" | crane auth login ghcr.io -u ${{ env.registryGhcrUsernameOverride }} --password-stdin
       - id: build
         env:
           KO_DOCKER_REPO: ${{ steps.run-info.outputs.ko-docker-repo }}
