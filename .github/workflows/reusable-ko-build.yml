@@ -69,7 +69,7 @@ jobs:
           if [ -n "${{ inputs.paths }}" ]; then
             echo "paths=$(echo '${{ inputs.paths }}' | tr '\n' ' ')" >> $GITHUB_OUTPUT
           else
-            PATHS="$(grep -r 'package main' | sort | cut -d ':' -f1 | grep '.go$' | xargs -n 1 dirname | sort | uniq | grep -v vendor | xargs -i echo './{}' | xargs)"
+            PATHS="$(go list -json ./... | jq -r -s '.[] | select (.Name == "main") | .ImportPath' | xargs)"
             echo "paths="$PATHS"" >> $GITHUB_OUTPUT
           fi
       - uses: actions/setup-go@fac708d6674e30b6ba41289acaab6d4b75aa0753 # v4.0.1
